@@ -1,0 +1,41 @@
+Create a new user
+---
+tags:
+  - Pulblic API
+consumes:
+  - application/json
+
+definitions:
+  user:
+    type: object
+    properties:
+      name:
+        type: string
+        example: "tomlin"
+      email:
+        type: string
+        example: "email5566"
+  add_user_response:
+    properties:
+      user_id:
+        type: string
+        example: "1"
+
+parameters:
+  - name: user
+    in: body
+    schema:
+      required: true
+      $ref: '#/definitions/user'
+
+responses:
+  '201':
+    description: "successful creation"
+    schema:
+      $ref: '#/definitions/add_user_response'
+  "400":
+    description: "invalid input"
+  '409':
+    description: "email conflict"
+  '500':
+    description: "internal server error"
