@@ -1,0 +1,14 @@
+FROM python:3.7
+
+RUN  apt update -y && apt install -y software-properties-common && apt update -y && \
+     apt install -y \
+     iputils-ping \
+     inetutils-traceroute \
+     net-tools \
+     curl
+
+COPY requirements.txt /tmp/
+RUN ["pip3", "install", "--upgrade", "pip"]
+RUN ["pip3", "install", "--requirement", "/tmp/requirements.txt"]
+RUN ["mkdir", "-p", "/app"]
+CMD ["/bin/bash"]
