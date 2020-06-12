@@ -1,0 +1,43 @@
+List the users
+---
+tags:
+  - Users
+
+consumes:
+  - application/json
+
+definitions:
+  list_users_response:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "1"
+      name:
+        type: string
+        example: "tomlin"
+      email:
+        type: string
+        example: "email5566"
+
+parameters:
+  - name: page
+    in: query
+    type: integer
+    example: 0
+    description: "page number, starting from 0"
+  - name: page_size
+    in: query
+    type: integer
+    example: 100
+    description: "record number for each page"
+
+responses:
+  '200':
+    description: "list users"
+    schema:
+      type: array
+      items:
+        $ref: '#/definitions/list_users_response'
+  '500':
+    description: "internal server error"

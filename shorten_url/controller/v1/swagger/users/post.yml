@@ -1,12 +1,13 @@
 Create a new user
 ---
 tags:
-  - Pulblic API
+  - Users
+
 consumes:
   - application/json
 
 definitions:
-  user:
+  add_user_query:
     type: object
     properties:
       name:
@@ -16,8 +17,9 @@ definitions:
         type: string
         example: "email5566"
   add_user_response:
+    type: object
     properties:
-      user_id:
+      id:
         type: string
         example: "1"
 
@@ -25,8 +27,7 @@ parameters:
   - name: user
     in: body
     schema:
-      required: true
-      $ref: '#/definitions/user'
+      $ref: '#/definitions/add_user_query'
 
 responses:
   '201':

@@ -8,17 +8,35 @@ from shorten_url.pattern import SingletonABCMeta
 
 class UserEntitry(EntitryMixin):
 
+    __slots__ = ['entity']
+
     def __init__(self, name, email, id=None):
-        self.id = id
-        self.name = name
-        self.email = email
+        self.entity = {"id": id,
+                       "name": name,
+                       "email": email}
+
+    @property
+    def asdict(self) -> dict:
+        return self.entity
+
+    @property
+    def id(self):
+        return self.entity['id']
+
+    @property
+    def name(self):
+        return self.entity['name']
+
+    @name.setter
+    def name(self, new_name):
+        self.entity['name'] = new_name
+
+    @property
+    def email(self):
+        return self.entity['email']
 
     def __repr__(self):
-        return f'[' \
-               f'<id:{self.id}>\n' \
-               f'<cid:{self.name}>\n' \
-               f'<uid:{self.email}>\n' \
-               f']'
+        return str(self.entity)
 
 
 class UserRepositoryABC(metaclass=SingletonABCMeta):

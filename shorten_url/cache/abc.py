@@ -17,7 +17,9 @@ class CacheABC(metaclass=SingletonABCMeta):
         self.set(key, json.dumps(val), ex=ex)
 
     def get_json(self, key):
-        v = self.get(key)
-        if not v:
+        val = self.get(key)
+
+        if not val:
             return None
-        return json.loads(v)
+
+        return json.loads(val)

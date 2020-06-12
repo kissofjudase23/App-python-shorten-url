@@ -4,6 +4,15 @@ from shorten_url.models.user import UserRepositoryABC, UserEntitry
 from shorten_url.cache.abc import CacheABC
 
 
+def marshal_user_entities(user_entitries: List[UserEntitry]) -> List[dict]:
+    m_entitries = []
+
+    for entity in user_entitries:
+        m_entitries.append(entity.asdict)
+
+    return m_entitries
+
+
 class User(metaclass=Singleton):
 
     def __init__(self,
@@ -23,7 +32,7 @@ class User(metaclass=Singleton):
         """
         return self.user_repo.add_user(name, email)
 
-    def list_users(self, page=0, page_size=100) -> List[UserEntitry]:
+    def list_users(self, page=0, page_size=100) -> List[dict]:
         """ List the users
 
         Args:
@@ -33,15 +42,19 @@ class User(metaclass=Singleton):
             List[UserEntitry]
         """
         cache_key = f"User:list_users:{page}:{page_size}"
-        cache_ex = 300
-
         cache_result = self.cache.get_json(cache_key)
         if cache_result:
             return cache_result
 
-        result = self.user_repo.add_user(page, page_size)
-        self.cache.set_json(key=cache_key, val=result, ex=cache_ex)
-        return result
+        user_entities = self.user_repo.list_users(page, page_size)
+        marshalled_result = marshal_user_entities(user_entities)
+
+        # marshal_user_entities
+        cache_ex = 10
+        self.cache.set_json(key=cache_key,
+                            val=marshalled_result,
+                            ex=cache_ex)
+        return marshalled_result
 
     def delete_user(self, user_id):
         return self.user_repo.delete_user(user_id)
