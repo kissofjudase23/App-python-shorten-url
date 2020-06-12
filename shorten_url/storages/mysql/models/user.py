@@ -34,8 +34,9 @@ class MysqlUserRepo(UserRepositoryABC):
             raise exc.DuplicateUserError(f"{e}") from e
 
     def list_users(self, page=0, page_size=100) -> List[UserEntitry]:
-        users = []
         with transaction_context() as session:
+            users = []
+
             query = session.query(User)
 
             if page and page_size:
@@ -47,7 +48,16 @@ class MysqlUserRepo(UserRepositoryABC):
             for record in query.all():
                 users.append(to_user_entitry(record))
 
-        return users
+            return users
+
+    def get_user_info(self, user_id) -> UserEntitry:
+        with transaction_context() as session:
+            record = session.query(User)\
+                            .filter(User.id == user_id).one_or_none()
+            if not record:
+                raise exc.UserNotFoundError(f"user for {user_id} not found")
+
+            return to_user_entitry(record)
 
     def delete_user(self, user_id):
         with transaction_context() as session:

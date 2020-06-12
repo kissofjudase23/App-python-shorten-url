@@ -24,3 +24,7 @@ class DataBaseError(AppError):
 
 class DuplicateUserError(DataBaseError):
     pass
+
+
+class UserNotFoundError(DataBaseError):
+    pass

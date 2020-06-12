@@ -78,8 +78,6 @@ class Users(Resource):
             return abort(HTTPStatus.INTERNAL_SERVER_ERROR.value,
                          message=HTTPStatus.INTERNAL_SERVER_ERROR.description)
 
-        # TODO, need marshall
-        # https://flask-restful.readthedocs.io/en/latest/fields.html
         return users, HTTPStatus.OK.value
 
 
@@ -103,6 +101,19 @@ class User(Resource):
 
         return HTTPStatus.OK.value
 
-    # def get(self, user_id):
-    #     """ Lit the user infomation
-    #     """
+    @swag_from("swagger/user/get.yml", validation=False)
+    def get(self, user_id):
+        """ Lit the user infomation
+        """
+        try:
+            user = USER_USECASE.get_user_info(user_id)
+        except exc.UserNotFoundError as e:
+            LOGGER.info(f":{e}")
+            return abort(HTTPStatus.NOT_FOUND.value,
+                         message=HTTPStatus.NOT_FOUND.description)
+        except Exception as e:
+            LOGGER.error(f"internal server error:{e}")
+            return abort(HTTPStatus.INTERNAL_SERVER_ERROR.value,
+                         message=HTTPStatus.INTERNAL_SERVER_ERROR.description)
+
+        return user, HTTPStatus.OK.value

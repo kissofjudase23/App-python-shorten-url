@@ -24,17 +24,17 @@
 
 
 ## Design
-  * Flow
+  * Flow:
     * Route -> Controller -> UseCase -> Model
 
-  * Controller
+  * Controllers:
 
-  * Model:
+  * Models:
     * Entity
     * Entitry Repository
 
-  * Storage:
+  * Storages:
     * Implement the Entitry Repository
 
-  * Use Case:
+  * Use Cases:
     * One Usecase may consist of multiple Entitry Repositories

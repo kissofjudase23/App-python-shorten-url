@@ -1,4 +1,4 @@
-Delete the existing user
+Get the user information
 ---
 tags:
   - User
@@ -10,7 +10,6 @@ parameters:
   - name: user_id
     in: path
     type: string
-    example: 0
 
 responses:
   '200':

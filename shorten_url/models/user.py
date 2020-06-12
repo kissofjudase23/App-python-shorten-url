@@ -43,7 +43,6 @@ class UserRepositoryABC(metaclass=SingletonABCMeta):
     @abstractmethod
     def add_user(self, name, email):
         """ add a new user
-
         Args:
         Return:
             user_id
@@ -55,7 +54,6 @@ class UserRepositoryABC(metaclass=SingletonABCMeta):
     @abstractmethod
     def list_users(self, page, page_size) -> List[UserEntitry]:
         """ List the users
-
         Args:
             offset = page * page_size
             limit = page_size
@@ -66,4 +64,12 @@ class UserRepositoryABC(metaclass=SingletonABCMeta):
 
     @abstractmethod
     def delete_user(self, user_id):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def get_user_info(self, user_id) -> UserEntitry:
+        """
+        Raise:
+            UserNotFoundError
+        """
         raise NotImplementedError()

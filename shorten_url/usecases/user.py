@@ -34,7 +34,6 @@ class User(metaclass=Singleton):
 
     def list_users(self, page=0, page_size=100) -> List[dict]:
         """ List the users
-
         Args:
             offset = page * page_size
             limit = page_size
@@ -58,3 +57,21 @@ class User(metaclass=Singleton):
 
     def delete_user(self, user_id):
         return self.user_repo.delete_user(user_id)
+
+    def get_user_info(self, user_id) -> dict:
+        """ Get the user information
+        Args:
+        Raise :
+            UserNotFoundError
+        """
+        cache_key = f"User:get_user_info:{user_id}"
+        cache_result = self.cache.get_json(cache_key)
+        if cache_result:
+            return cache_result
+
+        user_entity = self.user_repo.get_user_info(user_id)
+        cache_ex = 10
+        self.cache.set_json(key=cache_key,
+                            val=user_entity.asdict,
+                            ex=cache_ex)
+        return user_entity.asdict
