@@ -14,7 +14,7 @@ class UserUrlMap(BASE):
     __tablename__ = 'user_url_map'
 
     # composite primary key
-    uid = Column(BIGINT(unsigned=True),
+    user_id = Column(BIGINT(unsigned=True),
                  ForeignKey('user.id', ondelete="CASCADE"),
                  primary_key=True)
 
@@ -31,8 +31,12 @@ class UserUrlMap(BASE):
 
     # composite foreign keys
     __table_args__ = (
-        UniqueConstraint(uid, url_id),
+        UniqueConstraint(user_id, url_id),
         {'mysql_engine': ENGINE,
          'mysql_charset': CHARSET,
          'mysql_collate': COLLATE}
     )
+
+    def __init__(self, user_id, url_id):
+        self.user_id = user_id
+        self.url_id = url_id

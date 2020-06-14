@@ -30,3 +30,6 @@ class Url(BASE):
     create_time = Column(DATETIME(),
                          server_default=func.now(),
                          nullable=False)
+
+    def __init__(self, ori_url):
+        self.ori_url = ori_url
