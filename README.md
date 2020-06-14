@@ -38,3 +38,25 @@
 
   * Use Cases:
     * One Usecase may consist of multiple Entitry Repositories
+
+
+## Analysis:
+  * The Indexed Web contains at least 5.49 billion pages (Saturday, 13 June, 2020).
+    * which is greaterh than 2^32 (4 billion)
+    * 64 bits integer is enough.
+
+  * How to display the 64 bits unique id in the web??
+    * Base62 is a common method.
+      * charset [a-z A-Z 0-9]
+    * max lenth of the unique id
+      * `math.log(2**64-1, 62)` = 10.7 (at most 11 characters)
+
+
+  * Ref:
+    * https://www.worldwidewebsize.com/
+    * http://cn.soulmachine.me/2017-04-10-how-to-design-tinyurl/
+
+
+## How to get a unique id
+  * Ref:
+    * https://instagram-engineering.com/sharding-ids-at-instagram-1cf5a71e5a5c
