@@ -28,11 +28,20 @@ clean_cache:
 	find . | grep -E "\(__pycache__|\.pyc|\.pyo$\)" | xargs rm -rf && \
 	rm -rf ./htmlcov
 
+ut_dev: clean_cache
+	pytest --pyargs -vx --pdb ./shorten_url -c ./tests/pytest.ini
+
+ut_redis:
+	pytest --pyargs -v ./shorten_url -c ./tests/pytest.ini -m redis
+
+ut_mysql:
+	pytest --pyargs -v ./shorten_url -c ./tests/pytest.ini -m redis
+
 ut: clean_cache
-	pytest --pyargs -v ./shorten_url
+	pytest --pyargs -v ./shorten_url -c ./tests/pytest.ini
 
 ut_cov: clean_cache
-	pytest --pyargs --cov=./shorten_url --cov-config=./tests/pytest_converage.ini --cov-report=html
+	pytest --pyargs -c ./tests/pytest.ini --cov=./shorten_url --cov-config=./tests/pytest_converage.ini --cov-report=html
 
 shorten_url:
 	docker exec -it $(service_name) bash
