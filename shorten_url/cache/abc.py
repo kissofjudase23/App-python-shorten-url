@@ -13,6 +13,10 @@ class CacheABC(metaclass=SingletonABCMeta):
     def get(self, key):
         raise NotImplementedError()
 
+    @abstractmethod
+    def delete(self, *key):
+        raise NotImplementedError()
+
     def set_json(self, key, val, *, ex=None):
         self.set(key, json.dumps(val), ex=ex)
 

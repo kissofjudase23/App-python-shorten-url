@@ -4,6 +4,7 @@ import redis
 
 
 class RedisCache(CacheABC):
+    # Ref: https://redis-py.readthedocs.io/en/latest/
 
     def __init__(self,
                  host=CacheVars.HOST,
@@ -22,3 +23,6 @@ class RedisCache(CacheABC):
 
     def get(self, key):
         return self.redis.get(key)
+
+    def delete(self, *key):
+        self.redis.delete(*key)

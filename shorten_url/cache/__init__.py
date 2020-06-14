@@ -3,7 +3,7 @@ from shorten_url.cache.abc import CacheABC
 from unittest import mock
 
 
-def get_cache(cache_type=CacheVars.TYPE):
+def get_cache(cache_type=CacheVars.TYPE) -> CacheABC:
 
     if cache_type == CacheTypes.REDIS.value:
         from shorten_url.cache.redis import RedisCache
