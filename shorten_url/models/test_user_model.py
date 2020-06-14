@@ -6,12 +6,13 @@ import pytest
 
 
 @pytest.fixture
-def user_repo(scope="class"):
+def user_repo(scope="class") -> UserRepositoryABC:
     user_repo = Repositories.user(DbTypes.MYSQL.value)
     yield user_repo
 
 
-@pytest.mark.mysql_user_repo
+@pytest.mark.mysql
+@pytest.mark.user_repo
 class TestUserRepo(object):
 
     @pytest.mark.parametrize("user, email", [
