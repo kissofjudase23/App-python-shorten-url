@@ -33,6 +33,7 @@ def get_os_env(key, check_list=None):
 
 
 class AppVars(object):
+    HOST = get_os_env("APP_HOST")
     ENABLE_SWAGGER = strtobool(get_os_env(key="APP_ENABLE_SWAGGER"))
 
 

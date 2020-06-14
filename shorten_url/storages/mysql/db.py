@@ -1,7 +1,7 @@
 from shorten_url.variables import DbVars
 
 from sqlalchemy import create_engine
-from sqlalchemy.exc import SQLAlchemyError
+import sqlalchemy.exc as sqla_exc
 from sqlalchemy.orm import scoped_session, sessionmaker
 from contextlib import contextmanager
 
@@ -60,7 +60,7 @@ def transaction_context():
     try:
         yield session
         session.commit()
-    except SQLAlchemyError as e:
+    except sqla_exc.SQLAlchemyError as e:
         session.rollback()
         raise e
     finally:

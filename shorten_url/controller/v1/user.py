@@ -107,7 +107,7 @@ class User(Resource):
         """
         try:
             user = USER_USECASE.get_user_info(user_id)
-        except exc.UserNotFoundError as e:
+        except exc.NoUserFoundError as e:
             LOGGER.info(f":{e}")
             return abort(HTTPStatus.NOT_FOUND.value,
                          message=HTTPStatus.NOT_FOUND.description)
