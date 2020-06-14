@@ -1,12 +1,10 @@
 from typing import List
-
 from abc import abstractmethod
 
-from shorten_url.models.mixin import EntitryMixin
 from shorten_url.pattern import SingletonABCMeta
 
 
-class UserEntitry(EntitryMixin):
+class UserEntitry(object):
 
     __slots__ = ['entity']
 
@@ -63,6 +61,15 @@ class UserRepositoryABC(metaclass=SingletonABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
+    def check_if_the_user_exist(self, user_id) -> bool:
+        """ Check if the usr exists
+        Return:
+            True
+            False
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
     def delete_user(self, user_id):
         raise NotImplementedError()
 
@@ -70,6 +77,12 @@ class UserRepositoryABC(metaclass=SingletonABCMeta):
     def get_user_info(self, user_id) -> UserEntitry:
         """
         Raise:
-            UserNotFoundError
+            NoUserFoundError
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def delete_all_users(self):
+        """ Waining: Delte all users in the table
         """
         raise NotImplementedError()

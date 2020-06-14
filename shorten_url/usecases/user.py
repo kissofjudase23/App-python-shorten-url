@@ -62,7 +62,7 @@ class User(metaclass=Singleton):
         """ Get the user information
         Args:
         Raise :
-            UserNotFoundError
+            NoUserFoundError
         """
         cache_key = f"User:get_user_info:{user_id}"
         cache_result = self.cache.get_json(cache_key)
