@@ -22,6 +22,7 @@ class Base62Encorder(object):
 
 
 class MysqlUrlRepo(UrlRepositoryABC):
+
     def add_url(self, user_id, ori_url) -> str:
         """ Add a new url
         Args:
@@ -32,10 +33,12 @@ class MysqlUrlRepo(UrlRepositoryABC):
         """
         with transaction_context() as session:
             # add the new url record
+            url = Url(ori_url=ori_url)
+            session.add(url)
             try:
-                url = Url(ori_url=ori_url)
-                session.add(url)
+                session.commit()
             except sqla_exc.IntegrityError:
+                session.rollback()
                 # the url may be created by other user
                 # don't need to raise here
                 pass
@@ -45,7 +48,6 @@ class MysqlUrlRepo(UrlRepositoryABC):
                          .options(load_only(Url.id))\
                          .filter(Url.ori_url == ori_url).one()
             url_id = url.id
-
             try:
                 # add user_url_map
                 user_url_map = UserUrlMap(user_id, url_id)
@@ -79,9 +81,12 @@ class MysqlUrlRepo(UrlRepositoryABC):
 
             return url.ori_url
 
-    def delete_all_urls(self):
+    def delete_urls(self, ori_url_pattern=None):
         with transaction_context() as session:
-            session.query(Url).delete()
+            query = session.query(Url)
+            if ori_url_pattern:
+                query = query.filter(Url.ori_url.like(ori_url_pattern))
+            query.delete(synchronize_session=False)
 
 
 def test():
