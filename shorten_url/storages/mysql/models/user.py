@@ -52,7 +52,7 @@ class MysqlUserRepo(UserRepositoryABC):
                 raise exc.NoUserFoundError(f"user:{user_id} not found")
             return to_user_entitry(record)
 
-    def check_if_the_user_exist(self, user_id) -> bool:
+    def is_the_user_exist(self, user_id) -> bool:
         with transaction_context() as session:
             record = session.query(User)\
                             .options(load_only(User.id))\
@@ -61,20 +61,29 @@ class MysqlUserRepo(UserRepositoryABC):
 
     def delete_user(self, user_id):
         with transaction_context() as session:
-            session.query(User).filter(User.id == user_id).delete()
+            session.query(User).filter(User.id == user_id)\
+                               .delete(synchronize_session=False)
 
-    def delete_all_users(self):
+    def delete_users(self, user_name_pattern=None):
+        """
+        user_name_pattern:testuser%
+                          %testuser%
+        """
         with transaction_context() as session:
-            session.query(User).delete()
+            query = session.query(User)
+            if user_name_pattern:
+                query = query.filter(User.name.like(user_name_pattern))
+            query.delete(synchronize_session=False)
 
 
 def test():
     from pprint import pprint as pp
     user_repo = MysqlUserRepo()
-    user_repo.delete_all_users()
-    uid = user_repo.add_user(name="Tom", email="5566")
+    uid = user_repo.add_user(name="testuser1", email="5566")
+    uid = user_repo.add_user(name="testuser2", email="7788")
     pp(user_repo.list_users())
     pp(user_repo.get_user_info(uid))
+    user_repo.delete_users(user_name_pattern='testuser%')
 
 
 

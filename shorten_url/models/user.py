@@ -36,6 +36,15 @@ class UserEntitry(object):
     def __repr__(self):
         return str(self.entity)
 
+    def __eq__(self, other):
+        return self.asdict['id'] == other.asdict['id']
+
+    def __lt__(self, other):
+        return self.asdict['id'] < other.asdict['id']
+
+    def __le__(self, other):
+        return self.asdict['id'] <= other.asdict['id']
+
 
 class UserRepositoryABC(metaclass=SingletonABCMeta):
     @abstractmethod
@@ -61,7 +70,7 @@ class UserRepositoryABC(metaclass=SingletonABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def check_if_the_user_exist(self, user_id) -> bool:
+    def is_the_user_exist(self, user_id) -> bool:
         """ Check if the usr exists
         Return:
             True
@@ -82,7 +91,7 @@ class UserRepositoryABC(metaclass=SingletonABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def delete_all_users(self):
+    def delete_users(self, pattern):
         """ Waining: Delte all users in the table
         """
         raise NotImplementedError()
