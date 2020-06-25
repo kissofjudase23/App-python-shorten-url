@@ -37,3 +37,15 @@ class UrlRepositoryABC(metaclass=SingletonABCMeta):
             NoUserFoundError
         """
         raise NotImplementedError()
+
+    @abstractmethod
+    def delete_urls(self, ori_url_pattern):
+        """ Get the original URL
+        Args:
+            base62_url_id
+        Return:
+            ori_url
+        Raise:
+            NoUserFoundError
+        """
+        raise NotImplementedError()
