@@ -35,13 +35,13 @@ ut_redis:
 	pytest --pyargs -v ./shorten_url -c ./tests/pytest.ini -m redis
 
 ut_mysql:
-	pytest --pyargs -v ./shorten_url -c ./tests/pytest.ini -m redis
+	pytest --pyargs -v ./shorten_url -c ./tests/pytest.ini -m mysql
 
 ut: clean_cache
 	pytest --pyargs -v ./shorten_url -c ./tests/pytest.ini
 
 ut_cov: clean_cache
-	pytest --pyargs -c ./tests/pytest.ini --cov=./shorten_url --cov-config=./tests/pytest_converage.ini --cov-report=html
+	pytest --pyargs -c ./tests/pytest.ini --cov=./shorten_url --cov-config=./tests/pytest_conveage.ini --cov-report=html
 
 shorten_url:
 	docker exec -it $(service_name) bash
