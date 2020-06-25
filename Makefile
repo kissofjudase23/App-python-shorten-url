@@ -32,10 +32,10 @@ ut_dev: clean_cache
 	pytest --pyargs -vx --pdb ./shorten_url -c ./tests/pytest.ini
 
 ut_redis:
-	pytest --pyargs -v ./shorten_url -c ./tests/pytest.ini -m redis
+	pytest --pyargs -vx ./shorten_url -c ./tests/pytest.ini -m redis
 
 ut_mysql:
-	pytest --pyargs -v ./shorten_url -c ./tests/pytest.ini -m mysql
+	pytest --pyargs -vx ./shorten_url -c ./tests/pytest.ini -m mysql
 
 ut: clean_cache
 	pytest --pyargs -v ./shorten_url -c ./tests/pytest.ini
