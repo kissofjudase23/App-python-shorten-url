@@ -43,17 +43,17 @@ ut: clean_cache
 ut_cov: clean_cache
 	pytest --pyargs -c ./tests/pytest.ini --cov=./shorten_url --cov-config=./tests/pytest_conveage.ini --cov-report=html
 
-shorten_url:
+login_shorten_url:
 	docker exec -it $(service_name) bash
 
-mysql:
+login_mysql:
 	mysql -h 127.0.0.1 -P ${DB_PORT} -u${DB_ROOT_USER} -p${DB_ROOT_PASSWORD}
 
-redis:
+login_redis:
 	redis-cli -h 127.0.0.1 -p ${CACHE_PORT}
 
 flask_dev:
-	env FLASK_APP='shorten_url:create_app()' FLASK_DEBUG=1 flask run --host=0.0.0.0 --port=${APP_PORT}
+	env FLASK_APP='shorten_url:create_app()' FLASK_DEBUG=1 flask run --host=${APP_HOST} --port=${APP_PORT}
 
 gunicorn_dev:
-	gunicorn -w 1 -b 0.0.0.0:${APP_PORT} -k gevent 'shorten_url:create_app()'
+	gunicorn -w 1 -b ${APP_HOST}:${APP_PORT} -k gevent 'shorten_url:create_app()'
