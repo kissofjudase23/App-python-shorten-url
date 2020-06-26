@@ -21,8 +21,9 @@ class UrlRepositoryABC(metaclass=SingletonABCMeta):
             ori_url
         Return:
             base62_url_id
-        Raise:
+        Raises:
             NoUserFoundError
+            DuplicateUrlError
         """
         raise NotImplementedError()
 
@@ -34,7 +35,7 @@ class UrlRepositoryABC(metaclass=SingletonABCMeta):
         Return:
             ori_url
         Raise:
-            NoUserFoundError
+            NoUrlFoundError
         """
         raise NotImplementedError()
 
@@ -45,7 +46,5 @@ class UrlRepositoryABC(metaclass=SingletonABCMeta):
             base62_url_id
         Return:
             ori_url
-        Raise:
-            NoUserFoundError
         """
         raise NotImplementedError()
