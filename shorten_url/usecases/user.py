@@ -15,6 +15,9 @@ def marshal_user_entities(user_entitries: List[UserEntitry]) -> List[dict]:
 
 class User(metaclass=Singleton):
 
+    CACHE_EX_LIST_USER = 20
+    CACHE_EX_GET_USER_INFO = 10
+
     def __init__(self,
                  user_repo: UserRepositoryABC = None,
                  cache: CacheABC = None):
@@ -38,6 +41,14 @@ class User(metaclass=Singleton):
     def cache(self, cache: CacheABC):
         self._cache = cache
 
+    @staticmethod
+    def get_user_info_key(user_id):
+        return f"User:get_user_info:{user_id}"
+
+    @staticmethod
+    def get_list_users_key(page, page_size):
+        return f"User:list_users:{page}:{page_size}"
+
     def add_user(self, name, email):
         """ add a new user
         Args:
@@ -56,7 +67,7 @@ class User(metaclass=Singleton):
         Return:
             List[UserEntitry]
         """
-        cache_key = f"User:list_users:{page}:{page_size}"
+        cache_key = self.get_list_users_key(page, page_size)
         cache_result = self._cache.get_json(cache_key)
         if cache_result:
             return cache_result
@@ -65,10 +76,9 @@ class User(metaclass=Singleton):
         marshalled_result = marshal_user_entities(user_entities)
 
         # marshal_user_entities
-        cache_ex = 10
         self._cache.set_json(key=cache_key,
                              val=marshalled_result,
-                             ex=cache_ex)
+                             ex=self.CACHE_EX_LIST_USER)
         return marshalled_result
 
     def delete_user(self, user_id):
@@ -80,15 +90,14 @@ class User(metaclass=Singleton):
         Raise :
             NoUserFoundError
         """
-        cache_key = f"User:get_user_info:{user_id}"
+        cache_key = self.get_user_info_key(user_id)
         cache_result = self._cache.get_json(cache_key)
         if cache_result:
             return cache_result
 
         user_entity = self._user_repo.get_user_info(user_id)
-        cache_ex = 10
         self._cache.set_json(key=cache_key,
                              val=user_entity.asdict,
-                             ex=cache_ex)
+                             ex=self.CACHE_EX_GET_USER_INFO)
 
         return user_entity.asdict
