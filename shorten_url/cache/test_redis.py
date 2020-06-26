@@ -12,27 +12,55 @@ def cache(scope="class") -> CacheABC:
     yield cache
 
 
+test_kvs = [
+    ("test:key1", "test_5566"),
+    ("test:key2", "test_7788_00000000000000000000000000000000000000000000000000"),
+    ("test:key300000000000000000000000000", "test_7788_00000000000000000000000000000000000000000000000000"),
+    ("test:key4empty", "")
+]
+
+test_json_kvs = [
+    ("test:key1_json", {"key1": "data1", "key2": "data2", "key3": "data3"}),
+    ("test:key2_json_empty_dict", {}),
+    ("test:key3_json_empty_list", [])
+]
+
+
 @pytest.mark.redis
 class TestRedis(object):
 
-    @pytest.mark.parametrize("key, val", [
-        pytest.param("test:key1", "test_5566"),
-        pytest.param("test:key2", "test_7788_00000000000000000000000000000000000000000000000000")]
-    )
+    @pytest.mark.parametrize("key, val", test_kvs)
     def test_set_key(self,
                      cache: CacheABC,
-                     key, val, ex=600):
+                     key,
+                     val,
+                     ex=5):
         cache.set(key, val, ex=ex)
         actual = cache.get(key)
         assert actual == val
 
-    @pytest.mark.parametrize("key, val", [
-        pytest.param("test:key1_json", {"key1": "data1", "key2": "data2", "key3": "data3"}),
-        pytest.param("test:key2_json", {})]
-    )
+    @pytest.mark.parametrize("key, val", test_kvs)
+    def test_delete_key(self,
+                        cache: CacheABC,
+                        key,
+                        val,
+                        ex=None):
+
+        cache.set(key, val, ex=ex)
+        actual = cache.get(key)
+        assert actual == val
+
+        cache.delete(key)
+        actual = cache.get(key)
+        assert actual is None
+
+    @pytest.mark.parametrize("key, val", test_json_kvs)
     def test_set_json_key(self,
                           cache: CacheABC,
-                          key, val, ex=600):
+                          key,
+                          val,
+                          ex=5):
+
         cache.set_json(key, val, ex=ex)
         actual = cache.get_json(key)
         assert actual == val
