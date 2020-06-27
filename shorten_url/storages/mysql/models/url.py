@@ -11,14 +11,12 @@ from shorten_url.storages.mysql.tables.user_url_map import UserUrlMap
 import shorten_url.exc as exc
 
 
-class Base62Encorder(object):
-    @staticmethod
-    def to_base62_id(id):
-        return base62.encode(int(id))
+def to_base62_id(id_: int) -> str:
+    return base62.encode(id_)
 
-    @staticmethod
-    def to_id(base62_id):
-        return base62.decode(base62_id)
+
+def to_int_id(base62_id: str) -> int:
+    return base62.decode(base62_id)
 
 
 class MysqlUrlRepo(UrlRepositoryABC):
@@ -56,7 +54,7 @@ class MysqlUrlRepo(UrlRepositoryABC):
             except sqla_exc.IntegrityError:
                 raise exc.DuplicateUrlError("The user url mapping has been created before")
 
-        return Base62Encorder.to_base62_id(url_id)
+        return to_base62_id(url_id)
 
     def get_ori_url(self, base62_url_id) -> str:
         """ Get the original URL
@@ -68,7 +66,7 @@ class MysqlUrlRepo(UrlRepositoryABC):
             NoUserFoundError
         """
         try:
-            url_id = Base62Encorder.to_id(base62_url_id)
+            url_id = to_int_id(base62_url_id)
         except Exception:
             raise exc.NoUrlFoundError(f"{base62_url_id} is not a valid base62_url_id")
 
