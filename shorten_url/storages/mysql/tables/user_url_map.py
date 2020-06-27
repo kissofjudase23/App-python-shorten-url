@@ -22,8 +22,8 @@ class UserUrlMap(BASE):
                     ForeignKey('url.id', ondelete="CASCADE"),
                     primary_key=True)
 
-    user = relationship('User', back_populates='user_url_maps')
-    url = relationship('Url', back_populates='user_url_maps')
+    user = relationship('User', back_populates='user_url_maps', lazy='noload')
+    url = relationship('Url', back_populates='user_url_maps', lazy='noload')
 
     create_time = Column(DATETIME(),
                          server_default=func.now(),

@@ -22,7 +22,8 @@ class User(BASE):
     user_url_maps = relationship('UserUrlMap',
                                  cascade='all, delete-orphan',
                                  passive_deletes=True,
-                                 back_populates='user')
+                                 back_populates='user',
+                                 lazy='noload')
 
     email = Column(VARCHAR(256), nullable=False, index=True, unique=True)
     name = Column(VARCHAR(128), nullable=False)

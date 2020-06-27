@@ -23,7 +23,8 @@ class Url(BASE):
     user_url_maps = relationship('UserUrlMap',
                                  cascade='all, delete-orphan',
                                  passive_deletes=True,
-                                 back_populates='url')
+                                 back_populates='url',
+                                 lazy='noload')
 
     ori_url = Column(VARCHAR(256), nullable=False, index=True, unique=True)
 
