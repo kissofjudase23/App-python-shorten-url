@@ -8,8 +8,8 @@ class UserEntitry(object):
 
     __slots__ = ['entity']
 
-    def __init__(self, name, email, id=None):
-        self.entity = {"id": id,
+    def __init__(self, name: str, email: str, id=None):
+        self.entity = {"id": str(id),
                        "name": name,
                        "email": email}
 
@@ -48,7 +48,7 @@ class UserEntitry(object):
 
 class UserRepositoryABC(metaclass=SingletonABCMeta):
     @abstractmethod
-    def add_user(self, name, email):
+    def add_user(self, name, email) -> str:
         """ add a new user
         Args:
         Return:
@@ -70,7 +70,7 @@ class UserRepositoryABC(metaclass=SingletonABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def is_the_user_exist(self, user_id) -> bool:
+    def is_the_user_exist(self, user_id: str) -> bool:
         """ Check if the usr exists
         Return:
             True
@@ -79,11 +79,11 @@ class UserRepositoryABC(metaclass=SingletonABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def delete_user(self, user_id):
+    def delete_user(self, user_id: str):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_user_info(self, user_id) -> UserEntitry:
+    def get_user_info(self, user_id: str) -> UserEntitry:
         """
         Raise:
             NoUserFoundError

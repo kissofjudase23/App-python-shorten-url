@@ -34,7 +34,7 @@ class TestUserRepo(object):
                        user_repo: UserRepositoryABC,
                        name, email):
         uid = user_repo.add_user(name, email)
-        assert uid >= 1
+        assert uid >= "1"
 
     @pytest.mark.parametrize("name, email", test_users)
     def test_add_duplicated_users(self,

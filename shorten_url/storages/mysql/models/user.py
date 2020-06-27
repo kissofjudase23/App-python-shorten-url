@@ -16,7 +16,7 @@ def to_user_entitry(user: User) -> UserEntitry:
 
 
 class MysqlUserRepo(UserRepositoryABC):
-    def add_user(self, name, email):
+    def add_user(self, name, email) -> str:
         with transaction_context() as session:
             user = User(name, email)
             session.add(user)
@@ -24,7 +24,7 @@ class MysqlUserRepo(UserRepositoryABC):
                 session.commit()
             except sqla_exc.IntegrityError as e:
                 raise exc.DuplicateUserError(f"{e}") from e
-            return user.id
+            return str(user.id)
 
     def list_users(self, page=0, page_size=100) -> List[UserEntitry]:
         with transaction_context() as session:
@@ -44,6 +44,7 @@ class MysqlUserRepo(UserRepositoryABC):
             return users
 
     def get_user_info(self, user_id) -> UserEntitry:
+        user_id = int(user_id)
         with transaction_context() as session:
             record = session.query(User)\
                             .options(load_only(User.id, User.name, User.email))\
@@ -53,6 +54,7 @@ class MysqlUserRepo(UserRepositoryABC):
             return to_user_entitry(record)
 
     def is_the_user_exist(self, user_id) -> bool:
+        user_id = int(user_id)
         with transaction_context() as session:
             record = session.query(User)\
                             .options(load_only(User.id))\
@@ -60,6 +62,7 @@ class MysqlUserRepo(UserRepositoryABC):
             return True if record else False
 
     def delete_user(self, user_id):
+        user_id = int(user_id)
         with transaction_context() as session:
             session.query(User).filter(User.id == user_id)\
                                .delete(synchronize_session=False)

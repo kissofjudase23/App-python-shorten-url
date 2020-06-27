@@ -4,18 +4,13 @@ from shorten_url.models.user import UserRepositoryABC, UserEntitry
 from shorten_url.cache.abc import CacheABC
 
 
-def marshal_user_entities(user_entitries: List[UserEntitry]) -> List[dict]:
-    m_entitries = []
-
-    for entity in user_entitries:
-        m_entitries.append(entity.asdict)
-
-    return m_entitries
+def marshal_user_entities(user_entities: List[UserEntitry]) -> List[dict]:
+    return [e.asdict for e in user_entities]
 
 
 class User(metaclass=Singleton):
 
-    CACHE_EX_LIST_USER = 20
+    CACHE_EX_LIST_USERS = 20
     CACHE_EX_GET_USER_INFO = 10
 
     def __init__(self,
@@ -68,7 +63,7 @@ class User(metaclass=Singleton):
             List[UserEntitry]
         """
         cache_key = self.get_list_users_key(page, page_size)
-        cache_result = self._cache.get_json(cache_key)
+        cache_result = self._cache.get_json(key=cache_key)
         if cache_result:
             return cache_result
 
@@ -78,7 +73,7 @@ class User(metaclass=Singleton):
         # marshal_user_entities
         self._cache.set_json(key=cache_key,
                              val=marshalled_result,
-                             ex=self.CACHE_EX_LIST_USER)
+                             ex=self.CACHE_EX_LIST_USERS)
         return marshalled_result
 
     def delete_user(self, user_id):
@@ -91,7 +86,7 @@ class User(metaclass=Singleton):
             NoUserFoundError
         """
         cache_key = self.get_user_info_key(user_id)
-        cache_result = self._cache.get_json(cache_key)
+        cache_result = self._cache.get_json(key=cache_key)
         if cache_result:
             return cache_result
 
