@@ -2,7 +2,6 @@
 from enum import Enum
 from distutils.util import strtobool
 import os
-from pprint import pprint as pp
 from shorten_url import exc
 
 

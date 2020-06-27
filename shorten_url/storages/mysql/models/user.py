@@ -89,6 +89,5 @@ def test():
     user_repo.delete_users(user_name_pattern='testuser%')
 
 
-
 if __name__ == "__main__":
     test()

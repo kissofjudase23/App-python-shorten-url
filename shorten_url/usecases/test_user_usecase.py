@@ -87,7 +87,6 @@ class TestUserUseCases(object):
                                                     val=user_entity.asdict,
                                                     ex=user_usecases.CACHE_EX_GET_USER_INFO)
 
-
     @pytest.mark.parametrize("user_entities", test_user_entities)
     def test_list_users_use_cache(self,
                                   user_usecases: User,
@@ -115,7 +114,6 @@ class TestUserUseCases(object):
 
         mock_cache.set_json.assert_not_called()
         mock_user_repo.list_users.assert_not_called()
-
 
     @pytest.mark.parametrize("user_entities", test_user_entities)
     def test_list_users(self,
