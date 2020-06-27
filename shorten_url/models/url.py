@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from typing import List
 from shorten_url.pattern import SingletonABCMeta
 
 
@@ -9,6 +10,26 @@ class UrlEntity(object):
     def __init__(self, base62_id, ori_url):
         self.entity = {"base62_id": base62_id,
                        "ori_url": ori_url}
+
+    @property
+    def asdict(self) -> dict:
+        return self.entity
+
+    @property
+    def id(self):
+        return self.entity['base62_id']
+
+    def __repr__(self):
+        return str(self.entity)
+
+    def __eq__(self, other):
+        return self.asdict['base62_id'] == other.asdict['base62_id']
+
+    def __lt__(self, other):
+        return self.asdict['base62_id'] < other.asdict['base62_id']
+
+    def __le__(self, other):
+        return self.asdict['base62_id'] <= other.asdict['base62_id']
 
 
 class UrlRepositoryABC(metaclass=SingletonABCMeta):
@@ -37,6 +58,10 @@ class UrlRepositoryABC(metaclass=SingletonABCMeta):
         Raise:
             NoUrlFoundError
         """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def list_urls(self, user_id) -> List[UrlEntity]:
         raise NotImplementedError()
 
     @abstractmethod

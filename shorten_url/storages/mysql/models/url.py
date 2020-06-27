@@ -1,11 +1,13 @@
 import base62
+from typing import List
 from sqlalchemy.orm import load_only
 
 
 from sqlalchemy import exc as sqla_exc
 
-from shorten_url.models.url import UrlRepositoryABC
+from shorten_url.models.url import UrlRepositoryABC, UrlEntity
 from shorten_url.storages.mysql.db import transaction_context
+from shorten_url.storages.mysql.tables.user import User
 from shorten_url.storages.mysql.tables.url import Url
 from shorten_url.storages.mysql.tables.user_url_map import UserUrlMap
 import shorten_url.exc as exc
@@ -29,6 +31,7 @@ class MysqlUrlRepo(UrlRepositoryABC):
         Return:
             base62_url_id
         """
+        user_id = int(user_id)
         with transaction_context() as session:
             # add the new url record
             url = Url(ori_url=ori_url)
@@ -79,6 +82,27 @@ class MysqlUrlRepo(UrlRepositoryABC):
 
             return url.ori_url
 
+    def list_urls(self, user_id) -> List[UrlEntity]:
+        url_entities = []
+        user_id = int(user_id)
+        with transaction_context() as session:
+            records = session.query(User)\
+                             .join(UserUrlMap, User.id == UserUrlMap.user_id)\
+                             .join(Url, UserUrlMap.url_id == Url.id)\
+                             .with_entities(Url.id, Url.ori_url)\
+                             .filter(User.id == user_id)\
+                             .all()
+            """
+            Result is a list of tuples
+            [ (1, 'https://google.com.tw/123'),
+              (2, 'https://google.com.tw/456') ]
+            """
+            for url_id, ori_url in records:
+                url_entities.append(UrlEntity(base62_id=to_base62_id(url_id),
+                                              ori_url=ori_url))
+
+        return url_entities
+
     def delete_urls(self, ori_url_pattern=None):
         with transaction_context() as session:
             query = session.query(Url)
@@ -98,11 +122,17 @@ def test():
     print(f"user_uid:{user_uid}")
 
     base62_url_id = url_repo.add_url(user_id=user_uid,
-                                     ori_url="https://google.com.tw")
+                                     ori_url="https://google.com.tw/123")
     print(f"base62_url_id:{base62_url_id}")
 
-    ori_url = url_repo.get_ori_url(base62_url_id)
-    print(f"ori_url:{ori_url}")
+    base62_url_id = url_repo.add_url(user_id=user_uid,
+                                     ori_url="https://google.com.tw/456")
+    print(f"base62_url_id:{base62_url_id}")
+
+    user_uid = "1"
+    url_entities = url_repo.list_urls(user_uid)
+    for entity in url_entities:
+        print(entity)
 
 
 if __name__ == "__main__":
