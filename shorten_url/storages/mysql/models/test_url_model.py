@@ -1,6 +1,6 @@
 
 from shorten_url.variables import DbTypes
-from shorten_url.models.url import UrlRepositoryABC
+from shorten_url.models.url import UrlRepositoryABC, UrlEntity
 from shorten_url.storages import Repositories
 import shorten_url.exc as exc
 import pytest
@@ -32,6 +32,10 @@ test_urlrs = [
     (f"{TEST_URL_PREFIX}/111111111111/8888888888888888")
 ]
 
+test_url_lists = [
+    ([f"{TEST_URL_PREFIX}/123", f"{TEST_URL_PREFIX}/456"])
+]
+
 
 @pytest.mark.mysql
 @pytest.mark.mysql_url_repo
@@ -43,8 +47,8 @@ class TestUrlRepo(object):
                      user_id,
                      ori_url):
 
-        base_64_url_id = url_repo.add_url(user_id=user_id, ori_url=ori_url)
-        actual = url_repo.get_ori_url(base_64_url_id)
+        base_62_url_id = url_repo.add_url(user_id=user_id, ori_url=ori_url)
+        actual = url_repo.get_ori_url(base_62_url_id)
         expected = ori_url
         assert expected == actual
 
@@ -58,3 +62,17 @@ class TestUrlRepo(object):
         # caused by user_url_map
         with pytest.raises(exc.DuplicateUrlError):
             url_repo.add_url(user_id=user_id, ori_url=ori_url)
+
+    @pytest.mark.parametrize("urls", test_url_lists)
+    def test_list_urls(self,
+                       url_repo: UrlRepositoryABC,
+                       user_id,
+                       urls):
+
+        expected = []
+        for url in urls:
+            base_62_url_id = url_repo.add_url(user_id=user_id, ori_url=url)
+            expected.append(UrlEntity(base62_id=base_62_url_id, ori_url=url))
+
+        actual = url_repo.list_urls(user_id)
+        assert sorted(actual) == sorted(expected)
