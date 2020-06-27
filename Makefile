@@ -29,22 +29,22 @@ clean_cache:
 	rm -rf ./htmlcov
 
 ut_dev: clean_cache
-	pytest --pyargs -vx --pdb ./shorten_url -c ./tests/pytest.ini
+	pytest --pyargs -vvx --pdb ./shorten_url -c ./tests/pytest.ini
 
 ut_redis:
-	pytest --pyargs -vx ./shorten_url -c ./tests/pytest.ini -m redis
+	pytest --pyargs -vvx ./shorten_url -c ./tests/pytest.ini -m redis
 
 ut_mysql:
-	pytest --pyargs -vx ./shorten_url -c ./tests/pytest.ini -m mysql
+	pytest --pyargs -vvx ./shorten_url -c ./tests/pytest.ini -m mysql
 
 ut_usecase:
-	pytest --pyargs -vx ./shorten_url -c ./tests/pytest.ini -m use_cases
+	pytest --pyargs -vvx ./shorten_url -c ./tests/pytest.ini -m use_cases
 
 ut_user_usecase:
-	pytest --pyargs -vx ./shorten_url -c ./tests/pytest.ini -m user_usecases
+	pytest --pyargs -vvx ./shorten_url -c ./tests/pytest.ini -m user_usecases
 
 ut_url_usecase:
-	pytest --pyargs -vx ./shorten_url -c ./tests/pytest.ini -m url_usecases
+	pytest --pyargs -vvx ./shorten_url -c ./tests/pytest.ini -m url_usecases
 
 ut: clean_cache
 	pytest --pyargs -v ./shorten_url -c ./tests/pytest.ini
