@@ -3,7 +3,7 @@ from sqlalchemy.dialects.mysql import (BIGINT,
                                        DATETIME)
 from sqlalchemy.sql.expression import func
 from sqlalchemy.orm import relationship
-from sqlalchemy import ForeignKey, UniqueConstraint
+from sqlalchemy import ForeignKey, PrimaryKeyConstraint
 
 from shorten_url.storages.mysql.vars import ENGINE, CHARSET, COLLATE
 from shorten_url.storages.mysql.tables.base import BASE
@@ -31,7 +31,7 @@ class UserUrlMap(BASE):
 
     # composite unique constraint
     __table_args__ = (
-        UniqueConstraint(user_id, url_id),
+        PrimaryKeyConstraint(user_id, url_id),
         {'mysql_engine': ENGINE,
          'mysql_charset': CHARSET,
          'mysql_collate': COLLATE}
