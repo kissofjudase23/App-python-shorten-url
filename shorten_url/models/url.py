@@ -49,6 +49,18 @@ class UrlRepositoryABC(metaclass=SingletonABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
+    def delete_url(self, user_id, base62_url_id):
+        """ Add a new url
+        Args:
+            user_id
+            base62_url_id
+        Return:
+        Raises:
+            NoUrlFoundError
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
     def get_ori_url(self, base62_url_id) -> str:
         """ Get the original URL
         Args:

@@ -59,6 +59,17 @@ class Url(metaclass=Singleton):
         b62_url_id = self._url_repo.add_url(user_id, ori_url)
         return b62_url_id
 
+    def delete_url(self, user_id, base62_url_id):
+        """ Add a new url
+        Args:
+            user_id
+            base62_url_id
+        Return:
+        Raises:
+            NoUrlFoundError
+        """
+        self._url_repo.delete_url(user_id, base62_url_id)
+
     def list_urls(self, user_id, page=0, page_size=100) -> List[dict]:
         """ Add a new url
         Args:
@@ -72,7 +83,7 @@ class Url(metaclass=Singleton):
         if cache_result:
             return cache_result
 
-        url_entities = self._url_repo.list_urls(user_id)
+        url_entities = self._url_repo.list_urls(user_id, page, page_size)
         marshalled_result = marshal_url_entities(url_entities)
         # marshal_user_entities
         self._cache.set_json(key=cache_key,

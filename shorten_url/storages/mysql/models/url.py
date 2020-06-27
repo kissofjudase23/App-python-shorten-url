@@ -1,6 +1,7 @@
 import base62
 from typing import List
 from sqlalchemy.orm import load_only
+from sqlalchemy import and_
 
 
 from sqlalchemy import exc as sqla_exc
@@ -58,6 +59,25 @@ class MysqlUrlRepo(UrlRepositoryABC):
                 raise exc.DuplicateUrlError("The user url mapping has been created before")
 
         return to_base62_id(url_id)
+
+    def delete_url(self, user_id, base62_url_id):
+        """ Add a new url
+        Args:
+            user_id
+            base62_url_id
+        Return:
+        Raises:
+            NoUrlFoundError
+        """
+        try:
+            url_id = to_int_id(base62_url_id)
+        except Exception:
+            raise exc.NoUrlFoundError(f"{base62_url_id} is not a valid base62_url_id")
+
+        with transaction_context() as session:
+            session.query(UserUrlMap)\
+                   .filter(and_(UserUrlMap.user_id == user_id, UserUrlMap.url_id == url_id))\
+                   .delete(synchronize_session=False)
 
     def get_ori_url(self, base62_url_id) -> str:
         """ Get the original URL
