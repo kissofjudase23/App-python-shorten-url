@@ -1,10 +1,11 @@
 from typing import List
+from unittest import mock
+
+import pytest
 
 from shorten_url.models.user import UserEntitry, UserRepositoryABC
 from shorten_url.cache import CacheABC
 from shorten_url.usecases.user import User
-import pytest
-from unittest import mock
 
 
 @pytest.fixture
