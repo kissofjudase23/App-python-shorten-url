@@ -61,7 +61,7 @@ class UrlRepositoryABC(metaclass=SingletonABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def list_urls(self, user_id) -> List[UrlEntity]:
+    def list_urls(self, user_id, page, page_size) -> List[UrlEntity]:
         raise NotImplementedError()
 
     @abstractmethod

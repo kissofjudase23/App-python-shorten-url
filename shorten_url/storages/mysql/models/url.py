@@ -82,22 +82,28 @@ class MysqlUrlRepo(UrlRepositoryABC):
 
             return url.ori_url
 
-    def list_urls(self, user_id) -> List[UrlEntity]:
+    def list_urls(self, user_id, page=0, page_size=100) -> List[UrlEntity]:
         url_entities = []
         user_id = int(user_id)
         with transaction_context() as session:
-            records = session.query(User)\
-                             .join(UserUrlMap, User.id == UserUrlMap.user_id)\
-                             .join(Url, UserUrlMap.url_id == Url.id)\
-                             .with_entities(Url.id, Url.ori_url)\
-                             .filter(User.id == user_id)\
-                             .all()
+            query = session.query(User)\
+                           .join(UserUrlMap, User.id == UserUrlMap.user_id)\
+                           .join(Url, UserUrlMap.url_id == Url.id)\
+                           .with_entities(Url.id, Url.ori_url)\
+                           .filter(User.id == user_id)\
+
+            if page and page_size:
+                query = query.offset(page * page_size)
+
+            if page_size:
+                query = query.limit(page_size)
+
             """
             Result is a list of tuples
             [ (1, 'https://google.com.tw/123'),
               (2, 'https://google.com.tw/456') ]
             """
-            for url_id, ori_url in records:
+            for url_id, ori_url in query.all():
                 url_entities.append(UrlEntity(base62_id=to_base62_id(url_id),
                                               ori_url=ori_url))
 
