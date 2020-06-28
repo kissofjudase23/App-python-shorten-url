@@ -1,10 +1,9 @@
-import unittest.mock
 from unittest import mock
 
 import pytest
 import base62
 
-from shorten_url.cache.abc import CacheABC
+from shorten_url.models.cache import CacheRepositoryABC
 from shorten_url.models.url import UrlRepositoryABC
 from shorten_url.usecases.url import Url
 
@@ -34,7 +33,7 @@ class TestUrlUseCases(object):
 
         # create and set the mock object
         mock_url_repo = mock.create_autospec(UrlRepositoryABC)
-        mock_cache = mock.create_autospec(CacheABC)
+        mock_cache = mock.create_autospec(CacheRepositoryABC)
         url_usecases.cache = mock_cache
         url_usecases.url_repo = mock_url_repo
 
@@ -63,7 +62,7 @@ class TestUrlUseCases(object):
 
         # create and set the mock object
         mock_url_repo = mock.create_autospec(UrlRepositoryABC)
-        mock_cache = mock.create_autospec(CacheABC)
+        mock_cache = mock.create_autospec(CacheRepositoryABC)
         url_usecases.cache = mock_cache
         url_usecases.url_repo = mock_url_repo
 

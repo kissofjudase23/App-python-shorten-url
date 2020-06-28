@@ -2,13 +2,13 @@ import pytest
 import time
 
 from shorten_url.variables import CacheTypes
-from shorten_url.cache.abc import CacheABC
-from shorten_url.cache import get_cache
+from shorten_url.models.cache import CacheRepositoryABC
+from shorten_url.storages import Repositories
 
 
 @pytest.fixture
-def cache(scope="class") -> CacheABC:
-    cache = get_cache(CacheTypes.REDIS.value)
+def cache(scope="class") -> CacheRepositoryABC:
+    cache = Repositories.cache(CacheTypes.REDIS.value)
     yield cache
 
 
@@ -31,7 +31,7 @@ class TestRedis(object):
 
     @pytest.mark.parametrize("key, val", test_kvs)
     def test_set_key(self,
-                     cache: CacheABC,
+                     cache: CacheRepositoryABC,
                      key,
                      val,
                      ex=5):
@@ -41,7 +41,7 @@ class TestRedis(object):
 
     @pytest.mark.parametrize("key, val", test_kvs)
     def test_delete_key(self,
-                        cache: CacheABC,
+                        cache: CacheRepositoryABC,
                         key,
                         val,
                         ex=None):
@@ -56,7 +56,7 @@ class TestRedis(object):
 
     @pytest.mark.parametrize("key, val", test_json_kvs)
     def test_set_json_key(self,
-                          cache: CacheABC,
+                          cache: CacheRepositoryABC,
                           key,
                           val,
                           ex=5):
@@ -69,7 +69,7 @@ class TestRedis(object):
         pytest.param("test:key1_ex", "test_ex_val_5566", 2)]
     )
     def test_set_key_expire(self,
-                            cache: CacheABC,
+                            cache: CacheRepositoryABC,
                             key, val, ex):
 
         cache.set(key, val, ex=ex)

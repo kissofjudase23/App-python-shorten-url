@@ -4,7 +4,7 @@ from unittest import mock
 import pytest
 
 from shorten_url.models.user import UserEntitry, UserRepositoryABC
-from shorten_url.cache import CacheABC
+from shorten_url.models.cache import CacheRepositoryABC
 from shorten_url.usecases.user import User
 
 
@@ -39,7 +39,7 @@ class TestUserUseCases(object):
 
         # create and set the mock objects
         mock_user_repo = mock.create_autospec(UserRepositoryABC)
-        mock_cache = mock.create_autospec(CacheABC)
+        mock_cache = mock.create_autospec(CacheRepositoryABC)
         user_usecases.user_repo = mock_user_repo
         user_usecases.cache = mock_cache
 
@@ -64,7 +64,7 @@ class TestUserUseCases(object):
 
         # create and set the mock objects
         mock_user_repo = mock.create_autospec(UserRepositoryABC)
-        mock_cache = mock.create_autospec(CacheABC)
+        mock_cache = mock.create_autospec(CacheRepositoryABC)
         user_usecases.user_repo = mock_user_repo
         user_usecases.cache = mock_cache
 
@@ -96,7 +96,7 @@ class TestUserUseCases(object):
 
         # create and set the mock objects
         mock_user_repo = mock.create_autospec(UserRepositoryABC)
-        mock_cache = mock.create_autospec(CacheABC)
+        mock_cache = mock.create_autospec(CacheRepositoryABC)
         user_usecases.user_repo = mock_user_repo
         user_usecases.cache = mock_cache
 
@@ -124,7 +124,7 @@ class TestUserUseCases(object):
 
         # create and set the mock objects
         mock_user_repo = mock.create_autospec(UserRepositoryABC)
-        mock_cache = mock.create_autospec(CacheABC)
+        mock_cache = mock.create_autospec(CacheRepositoryABC)
         user_usecases.user_repo = mock_user_repo
         user_usecases.cache = mock_cache
 

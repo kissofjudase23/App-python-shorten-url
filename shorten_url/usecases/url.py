@@ -2,7 +2,7 @@ from typing import List
 
 from shorten_url.pattern import Singleton
 from shorten_url.models.url import UrlRepositoryABC, UrlEntity
-from shorten_url.cache.abc import CacheABC
+from shorten_url.models.cache import CacheRepositoryABC
 
 
 def marshal_url_entities(url_entities: List[UrlEntity]) -> List[dict]:
@@ -16,7 +16,7 @@ class Url(metaclass=Singleton):
 
     def __init__(self,
                  url_repo: UrlRepositoryABC = None,
-                 cache: CacheABC = None):
+                 cache: CacheRepositoryABC = None):
 
         self._url_repo = url_repo
         self._cache = cache
@@ -30,11 +30,11 @@ class Url(metaclass=Singleton):
         self._url_repo = url_repo
 
     @property
-    def cache(self) -> CacheABC:
+    def cache(self) -> CacheRepositoryABC:
         return self._cache
 
     @cache.setter
-    def cache(self, cache: CacheABC):
+    def cache(self, cache: CacheRepositoryABC):
         self._cache = cache
 
     @staticmethod

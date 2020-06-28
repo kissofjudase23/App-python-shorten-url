@@ -1,9 +1,9 @@
-from shorten_url.cache.abc import CacheABC
+from shorten_url.models.cache import CacheRepositoryABC
 from shorten_url.variables import CacheVars
 import redis
 
 
-class RedisCache(CacheABC):
+class RedisCache(CacheRepositoryABC):
     # Ref: https://redis-py.readthedocs.io/en/latest/
 
     def __init__(self,

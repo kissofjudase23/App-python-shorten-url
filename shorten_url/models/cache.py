@@ -3,7 +3,7 @@ from abc import abstractmethod
 from shorten_url.pattern import SingletonABCMeta
 
 
-class CacheABC(metaclass=SingletonABCMeta):
+class CacheRepositoryABC(metaclass=SingletonABCMeta):
 
     @abstractmethod
     def set(self, key, val, *, ex=None):

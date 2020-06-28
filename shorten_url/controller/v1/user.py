@@ -7,13 +7,12 @@ from flasgger import swag_from
 
 from shorten_url import exc
 from shorten_url.storages import Repositories
-from shorten_url.cache import get_cache
 from shorten_url.usecases.user import User as UserUsecases
 from shorten_url.logger import LogFactory
 
 
 USER_REPO = Repositories.user()
-CACHE = get_cache()
+CACHE = Repositories.cache()
 USER_USECASES = UserUsecases(USER_REPO, CACHE)
 LOGGER = LogFactory.logger(name=__name__)
 
