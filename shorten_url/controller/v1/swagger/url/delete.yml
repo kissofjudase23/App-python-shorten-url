@@ -1,7 +1,7 @@
-Get the user information
+Delete the existing user
 ---
 tags:
-  - User
+  - Url
 
 consumes:
   - application/json
@@ -10,9 +10,12 @@ parameters:
   - name: user_id
     in: path
     type: string
+  - name: url_id
+    in: path
+    type: string
 
 responses:
   '200':
-    description: "get the user infomation"
+    description: "delete the url"
   '500':
     description: "internal server error"

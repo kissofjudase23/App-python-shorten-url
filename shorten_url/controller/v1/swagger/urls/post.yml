@@ -1,0 +1,35 @@
+Create a new shorten url
+---
+tags:
+  - Urls
+
+consumes:
+  - application/json
+
+definitions:
+  add_url_query:
+    type: object
+    properties:
+      url:
+        type: string
+        example: "https://www.google.com.tw/"
+
+
+parameters:
+  - name: user_id
+    in: path
+    type: string
+  - name: url
+    in: body
+    schema:
+      $ref: '#/definitions/add_url_query'
+
+responses:
+  '201':
+    description: "Created"
+  '400':
+    description: "Bad Request"
+  '409':
+    description: "Conflict"
+  '500':
+    description: "internal server error"

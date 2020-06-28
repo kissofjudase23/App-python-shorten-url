@@ -1,0 +1,41 @@
+List the Urls of the user
+---
+tags:
+  - Urls
+
+consumes:
+  - application/json
+
+definitions:
+  list_urls:
+    type: object
+    properties:
+      base62_id:
+        type: string
+      ori_url:
+        type: string
+
+parameters:
+  - name: user_id
+    in: path
+    type: string
+  - name: page
+    in: query
+    type: integer
+    example: 0
+    description: "page number, starting from 0"
+  - name: page_size
+    in: query
+    type: integer
+    example: 100
+    description: "record number for each page"
+
+responses:
+  '200':
+    description: "list users"
+    schema:
+      type: array
+      items:
+        $ref: '#/definitions/list_urls'
+  '500':
+    description: "internal server error"
