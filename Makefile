@@ -15,6 +15,9 @@ up:
 down:
 	docker-compose -f $(compose_file) -p $(service_name) down
 
+downv:
+	docker-compose -f $(compose_file) -p $(service_name) down --volumes
+
 start:
 	docker-compose -f $(compose_file) -p $(service_name) down
 

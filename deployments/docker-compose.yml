@@ -1,6 +1,16 @@
 
 
 version: '3.7'
+
+networks:
+  py-shorten-url:
+    name: py-shorten-url
+    driver: bridge
+
+volumes:
+  mysql-volume:
+
+
 services:
   py-shorten-url:
     build:
@@ -8,10 +18,10 @@ services:
       dockerfile: ./build/dockerfile
     image: py-shorten-url:dev
     container_name: py-shorten-url
-    volumes:
-      - type: bind
-        source: ../
-        target: /app/
+    # volumes:
+    #   - type: bind
+    #     source: ../
+    #     target: /app/
     working_dir: /app
     restart: "always"
     ports:
@@ -36,8 +46,8 @@ services:
     tty: true
     networks:
       - py-shorten-url
-    # command: ["gunicorn", "-c", "./deployments/gunicorn/gunicorn_shorten_url.py", "shorten_url:create_app()"]
-    # gunicorn  -c ./deployments/gunicorn/gunicorn_shorten_url.py "shorten_url:create_app()"
+    # command: ["/bin/bash"]
+
 
   mysql:
     image: mysql:8
@@ -53,6 +63,8 @@ services:
         MYSQL_USER: ${DB_USER}
         MYSQL_PASSWORD: ${DB_PASSWORD}
     restart: "always"
+    volumes:
+      - mysql-volume:/var/lib/mysql
     networks:
       - py-shorten-url
 
@@ -67,8 +79,3 @@ services:
       restart: "always"
       networks:
         - py-shorten-url
-
-networks:
-  py-shorten-url:
-    name: py-shorten-url
-    driver: bridge
