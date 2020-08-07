@@ -1,7 +1,7 @@
 
 include .env
 
-.PHONY: build up down start restart stop tty redis mysql shorten_url gunicorn_dev
+.PHONY: build up down start restart stop redis mysql shorten_url gunicorn_dev
 
 service_name=py-shorten-url
 compose_file=./deployments/docker-compose.yml
@@ -19,13 +19,13 @@ downv:
 	docker-compose -f $(compose_file) -p $(service_name) down --volumes
 
 start:
-	docker-compose -f $(compose_file) -p $(service_name) down
+	docker-compose -f $(compose_file) -p $(service_name) start
 
 restart:
 	docker-compose -f $(compose_file) -p $(service_name) restart
 
 stop:
-	docker-compose -f $(compose_file) -p $(service_name) down
+	docker-compose -f $(compose_file) -p $(service_name) stop
 
 clean_cache:
 	find . | grep -E "\(__pycache__|\.pyc|\.pyo$\)" | xargs rm -rf && \
