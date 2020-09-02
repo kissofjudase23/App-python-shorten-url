@@ -4,7 +4,7 @@ from abc import abstractmethod
 from shorten_url.pattern import SingletonABCMeta
 
 
-class UserEntitry(object):
+class UserEntity(object):
 
     __slots__ = ['entity']
 
@@ -59,13 +59,13 @@ class UserRepositoryABC(metaclass=SingletonABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def list_users(self, page, page_size) -> List[UserEntitry]:
+    def list_users(self, page, page_size) -> List[UserEntity]:
         """ List the users
         Args:
             offset = page * page_size
             limit = page_size
         Return:
-            List[UserEntitry]
+            List[UserEntity]
         """
         raise NotImplementedError()
 
@@ -83,7 +83,7 @@ class UserRepositoryABC(metaclass=SingletonABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_user_info(self, user_id: str) -> UserEntitry:
+    def get_user_info(self, user_id: str) -> UserEntity:
         """
         Raise:
             NoUserFoundError

@@ -3,14 +3,14 @@ from typing import List
 from sqlalchemy import exc as sqla_exc
 from sqlalchemy.orm import load_only
 
-from shorten_url.models.user import UserEntitry, UserRepositoryABC
+from shorten_url.models.user import UserEntity, UserRepositoryABC
 from shorten_url.storages.mysql.db import transaction_context
 from shorten_url.storages.mysql.tables.user import User
 import shorten_url.exc as exc
 
 
-def to_user_entitry(user: User) -> UserEntitry:
-    return UserEntitry(name=user.name,
+def to_user_entitry(user: User) -> UserEntity:
+    return UserEntity(name=user.name,
                        email=user.email,
                        id=user.id)
 
@@ -26,7 +26,7 @@ class MysqlUserRepo(UserRepositoryABC):
                 raise exc.DuplicateUserError(f"{e}") from e
             return str(user.id)
 
-    def list_users(self, page=0, page_size=100) -> List[UserEntitry]:
+    def list_users(self, page=0, page_size=100) -> List[UserEntity]:
         with transaction_context() as session:
             users = []
 
@@ -43,7 +43,7 @@ class MysqlUserRepo(UserRepositoryABC):
 
             return users
 
-    def get_user_info(self, user_id) -> UserEntitry:
+    def get_user_info(self, user_id) -> UserEntity:
         user_id = int(user_id)
         with transaction_context() as session:
             record = session.query(User)\

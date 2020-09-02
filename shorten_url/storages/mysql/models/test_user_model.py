@@ -1,6 +1,6 @@
 
 from shorten_url.variables import DbTypes
-from shorten_url.models.user import UserRepositoryABC, UserEntitry
+from shorten_url.models.user import UserRepositoryABC, UserEntity
 from shorten_url.storages import Repositories
 import shorten_url.exc as exc
 import pytest
@@ -62,7 +62,7 @@ class TestUserRepo(object):
                            name, email):
 
         user_id = user_repo.add_user(name, email)
-        expected = UserEntitry(name=name, email=email, id=user_id)
+        expected = UserEntity(name=name, email=email, id=user_id)
         actual = user_repo.get_user_info(user_id)
         assert actual == expected
 
@@ -72,7 +72,7 @@ class TestUserRepo(object):
         expected = []
         for name, email in test_users:
             user_id = user_repo.add_user(name, email)
-            expected.append(UserEntitry(name=name, email=email, id=user_id))
+            expected.append(UserEntity(name=name, email=email, id=user_id))
 
         actual = user_repo.list_users(0, 100)
         assert sorted(expected) == sorted(actual)

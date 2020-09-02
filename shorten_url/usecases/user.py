@@ -1,10 +1,10 @@
 from typing import List
 from shorten_url.pattern import Singleton
-from shorten_url.models.user import UserRepositoryABC, UserEntitry
+from shorten_url.models.user import UserRepositoryABC, UserEntity
 from shorten_url.models.cache import CacheRepositoryABC
 
 
-def marshal_user_entities(user_entities: List[UserEntitry]) -> List[dict]:
+def marshal_user_entities(user_entities: List[UserEntity]) -> List[dict]:
     return [e.asdict for e in user_entities]
 
 
@@ -60,7 +60,7 @@ class User(metaclass=Singleton):
             offset = page * page_size
             limit = page_size
         Return:
-            List[UserEntitry]
+            List[UserEntity]
         """
         cache_key = self.get_list_users_key(page, page_size)
         cache_result = self._cache.get_json(key=cache_key)

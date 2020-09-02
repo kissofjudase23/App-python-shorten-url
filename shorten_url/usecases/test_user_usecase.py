@@ -3,7 +3,7 @@ from unittest import mock
 
 import pytest
 
-from shorten_url.models.user import UserEntitry, UserRepositoryABC
+from shorten_url.models.user import UserEntity, UserRepositoryABC
 from shorten_url.models.cache import CacheRepositoryABC
 from shorten_url.usecases.user import User
 
@@ -22,9 +22,9 @@ test_user_ids = [
 ]
 
 test_user_entities = [
-    ([UserEntitry(name="Tom", email="Tom@gmail.com", id="1"),
-      UserEntitry(name="Emily", email="Emily@gmail.com", id="2"),
-      UserEntitry(name="Jason", email="Jason@gmail.com", id="3")])
+    ([UserEntity(name="Tom", email="Tom@gmail.com", id="1"),
+      UserEntity(name="Emily", email="Emily@gmail.com", id="2"),
+      UserEntity(name="Jason", email="Jason@gmail.com", id="3")])
 ]
 
 
@@ -44,7 +44,7 @@ class TestUserUseCases(object):
         user_usecases.cache = mock_cache
 
         # mock the return value
-        expected = cache_result = UserEntitry(id=user_id,
+        expected = cache_result = UserEntity(id=user_id,
                                               name="tom",
                                               email="tom@gamil.com").asdict
         mock_cache.get_json.return_value = cache_result
@@ -70,7 +70,7 @@ class TestUserUseCases(object):
 
         # mock the return value
         mock_cache.get_json.return_value = None
-        user_entity = UserEntitry(id=user_id, name="tom", email="tom@gamil.com")
+        user_entity = UserEntity(id=user_id, name="tom", email="tom@gamil.com")
         mock_user_repo.get_user_info.return_value = user_entity
 
         # check results
@@ -90,7 +90,7 @@ class TestUserUseCases(object):
     @pytest.mark.parametrize("user_entities", test_user_entities)
     def test_list_users_use_cache(self,
                                   user_usecases: User,
-                                  user_entities: List[UserEntitry],
+                                  user_entities: List[UserEntity],
                                   page=0,
                                   page_size=100):
 
@@ -118,7 +118,7 @@ class TestUserUseCases(object):
     @pytest.mark.parametrize("user_entities", test_user_entities)
     def test_list_users(self,
                         user_usecases: User,
-                        user_entities: List[UserEntitry],
+                        user_entities: List[UserEntity],
                         page=0,
                         page_size=100):
 
