@@ -5,11 +5,6 @@ service_name=py-shorten-url
 compose_file=./deployments/docker-compose.yml
 pytest_cfg=./configs/pytest.ini
 
-# Set up editor env
-# pyenv version 3.8.5
-# pipenv shell
-# pip install -r requirements.txt
-
 build:
 	docker-compose -f $(compose_file) -p $(service_name) build
 

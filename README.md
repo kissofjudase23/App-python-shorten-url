@@ -18,8 +18,8 @@
   * Connect to Redis
     * `make redis`
 
-## Config
-  * `.env`
+## Configs
+  * see configs/dev.env
 
 ## Redirect
   * `http:{host_name}:8080/shorten_url/v1/{url_id}`
