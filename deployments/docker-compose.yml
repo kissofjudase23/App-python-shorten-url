@@ -1,6 +1,4 @@
-
-
-version: '3.7'
+version: "3.7"
 
 networks:
   py-shorten-url:
@@ -10,7 +8,6 @@ networks:
 volumes:
   mysql-volume:
 
-
 services:
   py-shorten-url:
     build:
@@ -18,34 +15,18 @@ services:
       dockerfile: ./build/dockerfile
     image: py-shorten-url:dev
     container_name: py-shorten-url
-    # for dev
-    # volumes:
-    #   - type: bind
-    #     source: ../
-    #     target: /app/
+    volumes:
+      - type: bind
+        source: ../
+        target: /app/
     working_dir: /app
     restart: "always"
     ports:
-    - target: 8080
-      published: 8080
-      protocol: tcp
-    environment:
-        APP_HOST: ${APP_HOST}
-        APP_PORT: ${APP_PORT}
-        APP_ENABLE_SWAGGER: ${APP_ENABLE_SWAGGER}
-        CACHE_TYPE: ${CACHE_TYPE}
-        CACHE_HOST: ${CACHE_HOST}
-        CACHE_PORT: ${CACHE_PORT}
-        CACHE_MAX_CONNECTIONS: ${CACHE_MAX_CONNECTIONS}
-        DB_TYPE: ${DB_TYPE}
-        DB_HOST: ${DB_HOST}
-        DB_PORT: ${DB_PORT}
-        DB_MAX_CONNECTIONS: ${DB_MAX_CONNECTIONS}
-        DB_DATABASE: ${DB_DATABASE}
-        DB_USER: ${DB_USER}
-        DB_PASSWORD: ${DB_PASSWORD}
+      - 127.0.0.1:8080:8080
     networks:
       - py-shorten-url
+    env_file:
+      - ../configs/dev.env
     tty: true
     logging:
       driver: json-file
@@ -54,15 +35,13 @@ services:
     image: mysql:8
     container_name: py-shorten-url-mysql
     ports:
-    - target: 3306
-      published: ${DB_PORT}
-      protocol: tcp
+      - 127.0.0.1:3306:3306
     tty: true
     environment:
-        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-        MYSQL_DATABASE: ${DB_DATABASE}
-        MYSQL_USER: ${DB_USER}
-        MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: q
+      MYSQL_DATABASE: shorten_url
+      MYSQL_USER: shorten_url
+      MYSQL_PASSWORD: q
     restart: "always"
     volumes:
       - mysql-volume:/var/lib/mysql
@@ -70,13 +49,11 @@ services:
       - py-shorten-url
 
   redis:
-      image: redis:6
-      container_name: py-shorten-url-redis
-      ports:
-      - target: ${CACHE_PORT}
-        published: ${CACHE_PORT}
-        protocol: tcp
-      tty: true
-      restart: "always"
-      networks:
-        - py-shorten-url
+    image: redis:6
+    container_name: py-shorten-url-redis
+    ports:
+      - 127.0.0.1:6379:6379
+    tty: true
+    restart: "always"
+    networks:
+      - py-shorten-url

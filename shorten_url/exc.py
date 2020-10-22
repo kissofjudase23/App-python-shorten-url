@@ -1,8 +1,6 @@
-
-
 class AppError(ValueError):
-    """ App Base Error
-    """
+    """App Base Error"""
+
     pass
 
 
@@ -24,6 +22,7 @@ class DataBaseError(AppError):
 
 class DuplicateUserError(DataBaseError):
     pass
+
 
 class InvaliadUserIdError(DataBaseError):
     pass

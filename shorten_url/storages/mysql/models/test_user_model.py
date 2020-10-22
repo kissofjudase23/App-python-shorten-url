@@ -1,4 +1,3 @@
-
 from shorten_url.variables import DbTypes
 from shorten_url.models.user import UserRepositoryABC, UserEntity
 from shorten_url.storages import Repositories
@@ -21,33 +20,26 @@ def user_repo(scope="function") -> UserRepositoryABC:
 
 test_users = [
     (f"{TEST_USER_PREFIX}1", "test1@gmail.com"),
-    (f"{TEST_USER_PREFIX}20000000000", "test2@gmail.commmmmmmmmmmmmmmmmmmmmmmmm")
+    (f"{TEST_USER_PREFIX}20000000000", "test2@gmail.commmmmmmmmmmmmmmmmmmmmmmmm"),
 ]
 
 
 @pytest.mark.mysql
 @pytest.mark.mysql_user_repo
 class TestUserRepo(object):
-
     @pytest.mark.parametrize("name, email", test_users)
-    def test_add_users(self,
-                       user_repo: UserRepositoryABC,
-                       name, email):
+    def test_add_users(self, user_repo: UserRepositoryABC, name, email):
         uid = user_repo.add_user(name, email)
         assert uid >= "1"
 
     @pytest.mark.parametrize("name, email", test_users)
-    def test_add_duplicated_users(self,
-                                  user_repo: UserRepositoryABC,
-                                  name, email):
+    def test_add_duplicated_users(self, user_repo: UserRepositoryABC, name, email):
         user_repo.add_user(name, email)
         with pytest.raises(exc.DuplicateUserError):
             user_repo.add_user(name, email)
 
     @pytest.mark.parametrize("name, email", test_users)
-    def test_check_if_the_user_exist(self,
-                                     user_repo: UserRepositoryABC,
-                                     name, email):
+    def test_check_if_the_user_exist(self, user_repo: UserRepositoryABC, name, email):
         user_id = user_repo.add_user(name, email)
         actual = user_repo.is_the_user_exist(user_id)
         assert actual is True
@@ -57,17 +49,14 @@ class TestUserRepo(object):
         assert actual is False
 
     @pytest.mark.parametrize("name, email", test_users)
-    def test_get_user_info(self,
-                           user_repo: UserRepositoryABC,
-                           name, email):
+    def test_get_user_info(self, user_repo: UserRepositoryABC, name, email):
 
         user_id = user_repo.add_user(name, email)
         expected = UserEntity(name=name, email=email, id=user_id)
         actual = user_repo.get_user_info(user_id)
         assert actual == expected
 
-    def test_list_users(self,
-                        user_repo: UserRepositoryABC):
+    def test_list_users(self, user_repo: UserRepositoryABC):
 
         expected = []
         for name, email in test_users:

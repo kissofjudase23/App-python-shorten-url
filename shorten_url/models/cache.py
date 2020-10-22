@@ -4,7 +4,6 @@ from shorten_url.pattern import SingletonABCMeta
 
 
 class CacheRepositoryABC(metaclass=SingletonABCMeta):
-
     @abstractmethod
     def set(self, key, val, *, ex=None):
         raise NotImplementedError()

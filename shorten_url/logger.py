@@ -14,39 +14,44 @@ class LogMode(IntEnum):
 class LogFactory(object):
     _SYSLOG_SOCKET = "/dev/log"
     # Ref: https://docs.python.org/3/library/logging.html#logrecord-attributes
-    _FORMATTER = logging.Formatter("[%(asctime)s] [%(levelname)s] [%(name)s] "
-                                   "[%(filename)s:%(funcName)s:%(lineno)d] "
-                                   "[%(message)s]")
+    _FORMATTER = logging.Formatter(
+        "[%(asctime)s] [%(levelname)s] [%(name)s] "
+        "[%(filename)s:%(funcName)s:%(lineno)d] "
+        "[%(message)s]"
+    )
 
     _JSON_FORMATTER = logging.Formatter(
         "{'time':'%(asctime)s', 'level':'%(levelname)s', 'logger_name':'%(name)s', "
         "'file':'%(filename)s:%(funcName)s:%(lineno)d', "
-        "'message': '%(message)s'}")
+        "'message': '%(message)s'}"
+    )
 
     @classmethod
-    def logger(cls,
-               *,
-               name,
-               mode=LogMode.CONSOLE,
-               log_level=logging.INFO,
-               ignore_process_thread=True,
-               ignore_src_file=False,
-               suppress_raise=True):
+    def logger(
+        cls,
+        *,
+        name,
+        mode=LogMode.CONSOLE,
+        log_level=logging.INFO,
+        ignore_process_thread=True,
+        ignore_src_file=False,
+        suppress_raise=True
+    ):
 
-        """ custom logger
-            Args:
-                name:
-                    name of your logger, use __name__ as a module level logger
-                mode:
-                    please refer LogMode
-                log_level:
-                    log level for your logger and handlers
-                    ex: logging.INFO, logging.DEBUG
-                suppress_raise:
-                    Swallow exceptions while logging, suggest to use this option
-                    on prod env
-            Returns:
-                logger obj
+        """custom logger
+        Args:
+            name:
+                name of your logger, use __name__ as a module level logger
+            mode:
+                please refer LogMode
+            log_level:
+                log level for your logger and handlers
+                ex: logging.INFO, logging.DEBUG
+            suppress_raise:
+                Swallow exceptions while logging, suggest to use this option
+                on prod env
+        Returns:
+            logger obj
         """
         if ignore_process_thread:
             logging.logThreads = 0

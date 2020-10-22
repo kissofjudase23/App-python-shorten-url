@@ -10,6 +10,7 @@ class Singleton(type):
     Usage: class A(metaclass=Singleton):
            pass
     """
+
     _instances = {}
 
     def __call__(cls, *args, **kwargs):
@@ -44,8 +45,8 @@ def retry(exceptions, *, tries=4, delay=1, back_off=2, logger=None):
             each retry).
         logger: Logger to use. If None, print.
     """
-    def deco_retry(f):
 
+    def deco_retry(f):
         @wraps(f)
         def f_retry(*args, **kwargs):
 
@@ -55,7 +56,7 @@ def retry(exceptions, *, tries=4, delay=1, back_off=2, logger=None):
                 try:
                     return f(*args, **kwargs)
                 except exceptions as e:
-                    msg = f'Retrying in {m_delay} seconds, err:{e}'
+                    msg = f"Retrying in {m_delay} seconds, err:{e}"
                     if logger:
                         logger.warning(msg)
                     else:

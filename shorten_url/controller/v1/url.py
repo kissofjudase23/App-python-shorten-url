@@ -18,10 +18,9 @@ LOGGER = LogFactory.logger(name=__name__)
 
 
 class Urls(Resource):
-
     @swag_from("swagger/urls/post.yml", validation=False)
     def post(self, user_id):
-        """ Creat a new shorten url
+        """Creat a new shorten url
         input:
             body:
                 user_id (path)
@@ -35,8 +34,7 @@ class Urls(Resource):
         except Exception as e:
             err_msg = f"invalid args:{e}"
             LOGGER.info(err_msg)
-            return abort(HTTPStatus.BAD_REQUEST.value,
-                         message=err_msg)
+            return abort(HTTPStatus.BAD_REQUEST.value, message=err_msg)
 
         try:
             url_id = URL_USECASE.add_url(user_id, url)
@@ -44,26 +42,26 @@ class Urls(Resource):
         except exc.NoUserFoundError:
             err_msg = f"user_id:{user_id} not found"
             LOGGER.warn(err_msg)
-            return abort(HTTPStatus.NOT_FOUND.value,
-                         message=err_msg)
+            return abort(HTTPStatus.NOT_FOUND.value, message=err_msg)
 
         except exc.DuplicateUrlError:
             err_msg = f"conflict url:{url}"
             LOGGER.warn(err_msg)
-            return abort(HTTPStatus.CONFLICT.value,
-                         message=err_msg)
+            return abort(HTTPStatus.CONFLICT.value, message=err_msg)
 
         except Exception as e:
             LOGGER.error(f"internal server error:{e}")
-            return abort(HTTPStatus.INTERNAL_SERVER_ERROR.value,
-                         message=HTTPStatus.INTERNAL_SERVER_ERROR.description)
+            return abort(
+                HTTPStatus.INTERNAL_SERVER_ERROR.value,
+                message=HTTPStatus.INTERNAL_SERVER_ERROR.description,
+            )
 
         shorten_url = f"{AppVars.HOST}/shorten_url/v1/{url_id}"
         return shorten_url, HTTPStatus.CREATED.value
 
     @swag_from("swagger/urls/get.yml", validation=False)
     def get(self, user_id):
-        """ List the urls of the user
+        """List the urls of the user
         input:
             path:
                 user_id
@@ -75,30 +73,30 @@ class Urls(Resource):
         """
         try:
             args = request.args
-            page = int(args.get('page', 0))
-            page_size = int(args.get('page_size', 100))
+            page = int(args.get("page", 0))
+            page_size = int(args.get("page_size", 100))
 
         except Exception as e:
             err_msg = f"invalid args:{e}"
             LOGGER.info(err_msg)
-            return abort(HTTPStatus.BAD_REQUEST.value,
-                         message=err_msg)
+            return abort(HTTPStatus.BAD_REQUEST.value, message=err_msg)
 
         try:
             urls = URL_USECASE.list_urls(user_id, page, page_size)
         except Exception as e:
             LOGGER.error(f"internal server error:{e}")
-            return abort(HTTPStatus.INTERNAL_SERVER_ERROR.value,
-                         message=HTTPStatus.INTERNAL_SERVER_ERROR.description)
+            return abort(
+                HTTPStatus.INTERNAL_SERVER_ERROR.value,
+                message=HTTPStatus.INTERNAL_SERVER_ERROR.description,
+            )
 
         return urls, HTTPStatus.OK.value
 
 
 class Url(Resource):
-
     @swag_from("swagger/url/delete.yml", validation=False)
     def delete(self, user_id, url_id):
-        """ delete the user
+        """delete the user
         input:
             path:
                 user_id
@@ -113,14 +111,15 @@ class Url(Resource):
             pass
         except Exception as e:
             LOGGER.error(f"internal server error:{e}")
-            return abort(HTTPStatus.INTERNAL_SERVER_ERROR.value,
-                         message=HTTPStatus.INTERNAL_SERVER_ERROR.description)
+            return abort(
+                HTTPStatus.INTERNAL_SERVER_ERROR.value,
+                message=HTTPStatus.INTERNAL_SERVER_ERROR.description,
+            )
 
         return HTTPStatus.OK.value
 
 
 class UrlRedirect(Resource):
-
     def get(self, url_id):
         """
         Redirect URL
@@ -130,12 +129,13 @@ class UrlRedirect(Resource):
         except exc.NoUrlFoundError:
             err_msg = f"url_id:{url_id} not found"
             LOGGER.warn(err_msg)
-            return abort(HTTPStatus.NOT_FOUND.value,
-                         message=err_msg)
+            return abort(HTTPStatus.NOT_FOUND.value, message=err_msg)
 
         except Exception as e:
             LOGGER.error(f"internal server error:{e}")
-            return abort(HTTPStatus.INTERNAL_SERVER_ERROR.value,
-                         message=HTTPStatus.INTERNAL_SERVER_ERROR.description)
+            return abort(
+                HTTPStatus.INTERNAL_SERVER_ERROR.value,
+                message=HTTPStatus.INTERNAL_SERVER_ERROR.description,
+            )
 
         return {}, HTTPStatus.FOUND.value, {"Location": ori_url}

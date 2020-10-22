@@ -59,6 +59,13 @@
     * http://cn.soulmachine.me/2017-04-10-how-to-design-tinyurl/
 
 
+## Setup Editor env
+  ```shell
+  pyenv version 3.8.5
+  pipenv shell
+  pip install -r requirements.txt
+  ```
+
 ## How to get a unique id
   * Ref:
     * https://instagram-engineering.com/sharding-ids-at-instagram-1cf5a71e5a5c

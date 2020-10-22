@@ -13,9 +13,7 @@ class User(metaclass=Singleton):
     CACHE_EX_LIST_USERS = 20
     CACHE_EX_GET_USER_INFO = 10
 
-    def __init__(self,
-                 user_repo: UserRepositoryABC = None,
-                 cache: CacheRepositoryABC = None):
+    def __init__(self, user_repo: UserRepositoryABC = None, cache: CacheRepositoryABC = None):
 
         self._user_repo = user_repo
         self._cache = cache
@@ -45,7 +43,7 @@ class User(metaclass=Singleton):
         return f"User:list_users:{page}:{page_size}"
 
     def add_user(self, name, email):
-        """ add a new user
+        """add a new user
         Args:
         Return:
             user_id
@@ -55,7 +53,7 @@ class User(metaclass=Singleton):
         return self._user_repo.add_user(name, email)
 
     def list_users(self, page=0, page_size=100) -> List[dict]:
-        """ List the users
+        """List the users
         Args:
             offset = page * page_size
             limit = page_size
@@ -71,16 +69,14 @@ class User(metaclass=Singleton):
         marshalled_result = marshal_user_entities(user_entities)
 
         # marshal_user_entities
-        self._cache.set_json(key=cache_key,
-                             val=marshalled_result,
-                             ex=self.CACHE_EX_LIST_USERS)
+        self._cache.set_json(key=cache_key, val=marshalled_result, ex=self.CACHE_EX_LIST_USERS)
         return marshalled_result
 
     def delete_user(self, user_id):
         return self._user_repo.delete_user(user_id)
 
     def get_user_info(self, user_id) -> dict:
-        """ Get the user information
+        """Get the user information
         Args:
         Raise :
             NoUserFoundError
@@ -91,8 +87,6 @@ class User(metaclass=Singleton):
             return cache_result
 
         user_entity = self._user_repo.get_user_info(user_id)
-        self._cache.set_json(key=cache_key,
-                             val=user_entity.asdict,
-                             ex=self.CACHE_EX_GET_USER_INFO)
+        self._cache.set_json(key=cache_key, val=user_entity.asdict, ex=self.CACHE_EX_GET_USER_INFO)
 
         return user_entity.asdict

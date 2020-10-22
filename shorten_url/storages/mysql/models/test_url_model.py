@@ -1,4 +1,3 @@
-
 from shorten_url.variables import DbTypes
 from shorten_url.models.url import UrlRepositoryABC, UrlEntity
 from shorten_url.storages import Repositories
@@ -29,23 +28,17 @@ def user_id(scope="class") -> str:
 test_urlrs = [
     (f"{TEST_URL_PREFIX}/123"),
     (f"{TEST_URL_PREFIX}/456"),
-    (f"{TEST_URL_PREFIX}/111111111111/8888888888888888")
+    (f"{TEST_URL_PREFIX}/111111111111/8888888888888888"),
 ]
 
-test_url_lists = [
-    ([f"{TEST_URL_PREFIX}/123", f"{TEST_URL_PREFIX}/456"])
-]
+test_url_lists = [([f"{TEST_URL_PREFIX}/123", f"{TEST_URL_PREFIX}/456"])]
 
 
 @pytest.mark.mysql
 @pytest.mark.mysql_url_repo
 class TestUrlRepo(object):
-
     @pytest.mark.parametrize("ori_url", test_urlrs)
-    def test_add_url(self,
-                     url_repo: UrlRepositoryABC,
-                     user_id,
-                     ori_url):
+    def test_add_url(self, url_repo: UrlRepositoryABC, user_id, ori_url):
 
         base_62_url_id = url_repo.add_url(user_id=user_id, ori_url=ori_url)
         actual = url_repo.get_ori_url(base_62_url_id)
@@ -53,10 +46,7 @@ class TestUrlRepo(object):
         assert expected == actual
 
     @pytest.mark.parametrize("ori_url", test_urlrs)
-    def test_add_duplicated_urls(self,
-                                 url_repo: UrlRepositoryABC,
-                                 user_id,
-                                 ori_url):
+    def test_add_duplicated_urls(self, url_repo: UrlRepositoryABC, user_id, ori_url):
 
         url_repo.add_url(user_id=user_id, ori_url=ori_url)
         # caused by user_url_map
@@ -64,10 +54,7 @@ class TestUrlRepo(object):
             url_repo.add_url(user_id=user_id, ori_url=ori_url)
 
     @pytest.mark.parametrize("urls", test_url_lists)
-    def test_list_urls(self,
-                       url_repo: UrlRepositoryABC,
-                       user_id,
-                       urls):
+    def test_list_urls(self, url_repo: UrlRepositoryABC, user_id, urls):
 
         expected = []
         for url in urls:

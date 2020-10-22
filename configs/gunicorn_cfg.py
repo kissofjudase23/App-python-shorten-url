@@ -1,4 +1,3 @@
-
 from multiprocessing import cpu_count
 from os import environ
 
@@ -141,6 +140,7 @@ def when_ready(server):
 #             if line:
 #                 code.append("  %s" % (line.strip()))
 #     worker.log.debug("\n".join(code))
+
 
 def worker_abort(worker):
     worker.log.info("worker received SIGABRT signal")

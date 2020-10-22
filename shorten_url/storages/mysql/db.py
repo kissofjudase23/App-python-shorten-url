@@ -18,38 +18,29 @@ from shorten_url.storages.mysql.vars import CHARSET, DRIVER
 ECHO_RAW_SQL_COMMAND = False
 
 
-def create_db_url(host,
-                  port,
-                  db,
-                  username,
-                  password,
-                  *,
-                  db_charset='utf8mb4',
-                  driver='pymysql'):
-    url = f'mysql+{driver}://{username}:{password}@{host}:{port}/{db}?charset={db_charset}'
+def create_db_url(host, port, db, username, password, *, db_charset="utf8mb4", driver="pymysql"):
+    url = f"mysql+{driver}://{username}:{password}@{host}:{port}/{db}?charset={db_charset}"
     return url
 
 
 class DbEngine(object):
-    URL = create_db_url(host=DbVars.HOST,
-                        port=DbVars.PORT,
-                        db=DbVars.DATABASE,
-                        username=DbVars.USER,
-                        password=DbVars.PASSWORD,
-                        db_charset=CHARSET,
-                        driver=DRIVER)
+    URL = create_db_url(
+        host=DbVars.HOST,
+        port=DbVars.PORT,
+        db=DbVars.DATABASE,
+        username=DbVars.USER,
+        password=DbVars.PASSWORD,
+        db_charset=CHARSET,
+        driver=DRIVER,
+    )
 
-    ENGINE = create_engine(URL,
-                           pool_size=DbVars.MAX_CONNECTIONS,
-                           encoding="utf8",
-                           echo=ECHO_RAW_SQL_COMMAND)
+    ENGINE = create_engine(
+        URL, pool_size=DbVars.MAX_CONNECTIONS, encoding="utf8", echo=ECHO_RAW_SQL_COMMAND
+    )
 
-    _ = BASE.metadata.create_all(bind=ENGINE,
-                                 checkfirst=True)
+    _ = BASE.metadata.create_all(bind=ENGINE, checkfirst=True)
 
-    SESSION = scoped_session(sessionmaker(autocommit=False,
-                                          autoflush=True,
-                                          bind=ENGINE))
+    SESSION = scoped_session(sessionmaker(autocommit=False, autoflush=True, bind=ENGINE))
 
     BASE.query = SESSION.query_property()
 

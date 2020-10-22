@@ -10,9 +10,7 @@ import shorten_url.exc as exc
 
 
 def to_user_entitry(user: User) -> UserEntity:
-    return UserEntity(name=user.name,
-                       email=user.email,
-                       id=user.id)
+    return UserEntity(name=user.name, email=user.email, id=user.id)
 
 
 class MysqlUserRepo(UserRepositoryABC):
@@ -46,9 +44,12 @@ class MysqlUserRepo(UserRepositoryABC):
     def get_user_info(self, user_id) -> UserEntity:
         user_id = int(user_id)
         with transaction_context() as session:
-            record = session.query(User)\
-                            .options(load_only(User.id, User.name, User.email))\
-                            .filter(User.id == user_id).one_or_none()
+            record = (
+                session.query(User)
+                .options(load_only(User.id, User.name, User.email))
+                .filter(User.id == user_id)
+                .one_or_none()
+            )
             if not record:
                 raise exc.NoUserFoundError(f"user:{user_id} not found")
             return to_user_entitry(record)
@@ -56,16 +57,18 @@ class MysqlUserRepo(UserRepositoryABC):
     def is_the_user_exist(self, user_id) -> bool:
         user_id = int(user_id)
         with transaction_context() as session:
-            record = session.query(User)\
-                            .options(load_only(User.id))\
-                            .filter(User.id == user_id).one_or_none()
+            record = (
+                session.query(User)
+                .options(load_only(User.id))
+                .filter(User.id == user_id)
+                .one_or_none()
+            )
             return True if record else False
 
     def delete_user(self, user_id):
         user_id = int(user_id)
         with transaction_context() as session:
-            session.query(User).filter(User.id == user_id)\
-                               .delete(synchronize_session=False)
+            session.query(User).filter(User.id == user_id).delete(synchronize_session=False)
 
     def delete_users(self, user_name_pattern=None):
         """
@@ -81,12 +84,13 @@ class MysqlUserRepo(UserRepositoryABC):
 
 def test():
     from pprint import pprint as pp
+
     user_repo = MysqlUserRepo()
     uid = user_repo.add_user(name="testuser1", email="5566")
     uid = user_repo.add_user(name="testuser2", email="7788")
     pp(user_repo.list_users())
     pp(user_repo.get_user_info(uid))
-    user_repo.delete_users(user_name_pattern='testuser%')
+    user_repo.delete_users(user_name_pattern="testuser%")
 
 
 if __name__ == "__main__":

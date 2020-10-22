@@ -6,12 +6,10 @@ from shorten_url.pattern import SingletonABCMeta
 
 class UserEntity(object):
 
-    __slots__ = ['entity']
+    __slots__ = ["entity"]
 
     def __init__(self, name: str, email: str, id=None):
-        self.entity = {"id": str(id),
-                       "name": name,
-                       "email": email}
+        self.entity = {"id": str(id), "name": name, "email": email}
 
     @property
     def asdict(self) -> dict:
@@ -19,37 +17,37 @@ class UserEntity(object):
 
     @property
     def id(self):
-        return self.entity['id']
+        return self.entity["id"]
 
     @property
     def name(self):
-        return self.entity['name']
+        return self.entity["name"]
 
     @name.setter
     def name(self, new_name):
-        self.entity['name'] = new_name
+        self.entity["name"] = new_name
 
     @property
     def email(self):
-        return self.entity['email']
+        return self.entity["email"]
 
     def __repr__(self):
         return str(self.entity)
 
     def __eq__(self, other):
-        return self.asdict['id'] == other.asdict['id']
+        return self.asdict["id"] == other.asdict["id"]
 
     def __lt__(self, other):
-        return self.asdict['id'] < other.asdict['id']
+        return self.asdict["id"] < other.asdict["id"]
 
     def __le__(self, other):
-        return self.asdict['id'] <= other.asdict['id']
+        return self.asdict["id"] <= other.asdict["id"]
 
 
 class UserRepositoryABC(metaclass=SingletonABCMeta):
     @abstractmethod
     def add_user(self, name, email) -> str:
-        """ add a new user
+        """add a new user
         Args:
         Return:
             user_id
@@ -60,7 +58,7 @@ class UserRepositoryABC(metaclass=SingletonABCMeta):
 
     @abstractmethod
     def list_users(self, page, page_size) -> List[UserEntity]:
-        """ List the users
+        """List the users
         Args:
             offset = page * page_size
             limit = page_size
@@ -71,7 +69,7 @@ class UserRepositoryABC(metaclass=SingletonABCMeta):
 
     @abstractmethod
     def is_the_user_exist(self, user_id: str) -> bool:
-        """ Check if the usr exists
+        """Check if the usr exists
         Return:
             True
             False
@@ -92,6 +90,5 @@ class UserRepositoryABC(metaclass=SingletonABCMeta):
 
     @abstractmethod
     def delete_users(self, pattern):
-        """ Waining: Delte all users in the table
-        """
+        """Waining: Delte all users in the table"""
         raise NotImplementedError()

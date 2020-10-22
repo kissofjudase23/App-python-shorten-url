@@ -14,28 +14,24 @@ def user_usecases(scope="class"):
     yield user_usecases
 
 
-test_user_ids = [
-    ("0"),
-    ("55555"),
-    ("999999999"),
-    ("1000000000000000000000000000000000")
-]
+test_user_ids = [("0"), ("55555"), ("999999999"), ("1000000000000000000000000000000000")]
 
 test_user_entities = [
-    ([UserEntity(name="Tom", email="Tom@gmail.com", id="1"),
-      UserEntity(name="Emily", email="Emily@gmail.com", id="2"),
-      UserEntity(name="Jason", email="Jason@gmail.com", id="3")])
+    (
+        [
+            UserEntity(name="Tom", email="Tom@gmail.com", id="1"),
+            UserEntity(name="Emily", email="Emily@gmail.com", id="2"),
+            UserEntity(name="Jason", email="Jason@gmail.com", id="3"),
+        ]
+    )
 ]
 
 
 @pytest.mark.usecases
 @pytest.mark.user_usecases
 class TestUserUseCases(object):
-
     @pytest.mark.parametrize("user_id", test_user_ids)
-    def test_get_user_info_use_cache(self,
-                                     user_usecases: User,
-                                     user_id):
+    def test_get_user_info_use_cache(self, user_usecases: User, user_id):
 
         # create and set the mock objects
         mock_user_repo = mock.create_autospec(UserRepositoryABC)
@@ -44,9 +40,7 @@ class TestUserUseCases(object):
         user_usecases.cache = mock_cache
 
         # mock the return value
-        expected = cache_result = UserEntity(id=user_id,
-                                              name="tom",
-                                              email="tom@gamil.com").asdict
+        expected = cache_result = UserEntity(id=user_id, name="tom", email="tom@gamil.com").asdict
         mock_cache.get_json.return_value = cache_result
 
         # check results
@@ -58,9 +52,7 @@ class TestUserUseCases(object):
         mock_user_repo.get_user_info.assert_not_called()
 
     @pytest.mark.parametrize("user_id", test_user_ids)
-    def test_get_user_info_(self,
-                            user_usecases: User,
-                            user_id):
+    def test_get_user_info_(self, user_usecases: User, user_id):
 
         # create and set the mock objects
         mock_user_repo = mock.create_autospec(UserRepositoryABC)
@@ -83,16 +75,14 @@ class TestUserUseCases(object):
 
         cache_key = user_usecases.get_user_info_key(user_id)
         mock_cache.get_json.assert_called_once_with(key=cache_key)
-        mock_cache.set_json.assert_called_once_with(key=cache_key,
-                                                    val=user_entity.asdict,
-                                                    ex=user_usecases.CACHE_EX_GET_USER_INFO)
+        mock_cache.set_json.assert_called_once_with(
+            key=cache_key, val=user_entity.asdict, ex=user_usecases.CACHE_EX_GET_USER_INFO
+        )
 
     @pytest.mark.parametrize("user_entities", test_user_entities)
-    def test_list_users_use_cache(self,
-                                  user_usecases: User,
-                                  user_entities: List[UserEntity],
-                                  page=0,
-                                  page_size=100):
+    def test_list_users_use_cache(
+        self, user_usecases: User, user_entities: List[UserEntity], page=0, page_size=100
+    ):
 
         # create and set the mock objects
         mock_user_repo = mock.create_autospec(UserRepositoryABC)
@@ -116,11 +106,9 @@ class TestUserUseCases(object):
         mock_user_repo.list_users.assert_not_called()
 
     @pytest.mark.parametrize("user_entities", test_user_entities)
-    def test_list_users(self,
-                        user_usecases: User,
-                        user_entities: List[UserEntity],
-                        page=0,
-                        page_size=100):
+    def test_list_users(
+        self, user_usecases: User, user_entities: List[UserEntity], page=0, page_size=100
+    ):
 
         # create and set the mock objects
         mock_user_repo = mock.create_autospec(UserRepositoryABC)
@@ -142,6 +130,6 @@ class TestUserUseCases(object):
 
         cache_key = User.get_list_users_key(page, page_size)
         mock_cache.get_json.assert_called_once_with(key=cache_key)
-        mock_cache.set_json.assert_called_once_with(key=cache_key,
-                                                    val=expected,
-                                                    ex=User.CACHE_EX_LIST_USERS)
+        mock_cache.set_json.assert_called_once_with(
+            key=cache_key, val=expected, ex=User.CACHE_EX_LIST_USERS
+        )

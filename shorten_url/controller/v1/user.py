@@ -1,4 +1,3 @@
-
 from http import HTTPStatus
 
 from flask import request
@@ -21,7 +20,7 @@ LOGGER = LogFactory.logger(name=__name__)
 class Users(Resource):
     @swag_from("swagger/users/post.yml", validation=False)
     def post(self):
-        """ Creat a new user
+        """Creat a new user
         input:
             body:
                 email
@@ -35,26 +34,26 @@ class Users(Resource):
             email = body.get("email").lower()
         except Exception as e:
             LOGGER.info(f"invalid args:{e}")
-            return abort(HTTPStatus.BAD_REQUEST.value,
-                         message=HTTPStatus.BAD_REQUEST.description)
+            return abort(HTTPStatus.BAD_REQUEST.value, message=HTTPStatus.BAD_REQUEST.description)
 
         try:
             user_id = USER_USECASES.add_user(name, email)
         except exc.DuplicateUserError as e:
             LOGGER.info(f"conflict error:{e}")
-            return abort(HTTPStatus.CONFLICT.value,
-                         message=f"conflict email:{email}")
+            return abort(HTTPStatus.CONFLICT.value, message=f"conflict email:{email}")
 
         except Exception as e:
             LOGGER.error(f"internal server error:{e}")
-            return abort(HTTPStatus.INTERNAL_SERVER_ERROR.value,
-                         message=HTTPStatus.INTERNAL_SERVER_ERROR.description)
+            return abort(
+                HTTPStatus.INTERNAL_SERVER_ERROR.value,
+                message=HTTPStatus.INTERNAL_SERVER_ERROR.description,
+            )
 
         return {"id": user_id}, HTTPStatus.CREATED.value
 
     @swag_from("swagger/users/get.yml", validation=False)
     def get(self):
-        """ List the users
+        """List the users
         input:
             args:
                 offset (optional)
@@ -64,30 +63,30 @@ class Users(Resource):
         """
         try:
             args = request.args
-            page = int(args.get('page', 0))
-            page_size = int(args.get('page_size', 100))
+            page = int(args.get("page", 0))
+            page_size = int(args.get("page_size", 100))
 
         except Exception as e:
             LOGGER.info(f"invalid args:{e}")
-            return abort(HTTPStatus.BAD_REQUEST.value,
-                         message=HTTPStatus.BAD_REQUEST.description)
+            return abort(HTTPStatus.BAD_REQUEST.value, message=HTTPStatus.BAD_REQUEST.description)
 
         try:
             users = USER_USECASES.list_users(page, page_size)
         except Exception as e:
             LOGGER.error(f"internal server error:{e}")
-            return abort(HTTPStatus.INTERNAL_SERVER_ERROR.value,
-                         message=HTTPStatus.INTERNAL_SERVER_ERROR.description)
+            return abort(
+                HTTPStatus.INTERNAL_SERVER_ERROR.value,
+                message=HTTPStatus.INTERNAL_SERVER_ERROR.description,
+            )
 
         return users, HTTPStatus.OK.value
 
 
 # /shorten_url/v1/user/
 class User(Resource):
-
     @swag_from("swagger/user/delete.yml", validation=False)
     def delete(self, user_id):
-        """ Delete the user
+        """Delete the user
         input:
             path:
                 user_id
@@ -98,14 +97,16 @@ class User(Resource):
             USER_USECASES.delete_user(user_id)
         except Exception as e:
             LOGGER.error(f"internal server error:{e}")
-            return abort(HTTPStatus.INTERNAL_SERVER_ERROR.value,
-                         message=HTTPStatus.INTERNAL_SERVER_ERROR.description)
+            return abort(
+                HTTPStatus.INTERNAL_SERVER_ERROR.value,
+                message=HTTPStatus.INTERNAL_SERVER_ERROR.description,
+            )
 
         return HTTPStatus.OK.value
 
     @swag_from("swagger/user/get.yml", validation=False)
     def get(self, user_id):
-        """ Lit the user infomation
+        """Lit the user infomation
         input:
             path:
                 user_id
@@ -116,11 +117,12 @@ class User(Resource):
             user = USER_USECASES.get_user_info(user_id)
         except exc.NoUserFoundError as e:
             LOGGER.info(f":{e}")
-            return abort(HTTPStatus.NOT_FOUND.value,
-                         message=HTTPStatus.NOT_FOUND.description)
+            return abort(HTTPStatus.NOT_FOUND.value, message=HTTPStatus.NOT_FOUND.description)
         except Exception as e:
             LOGGER.error(f"internal server error:{e}")
-            return abort(HTTPStatus.INTERNAL_SERVER_ERROR.value,
-                         message=HTTPStatus.INTERNAL_SERVER_ERROR.description)
+            return abort(
+                HTTPStatus.INTERNAL_SERVER_ERROR.value,
+                message=HTTPStatus.INTERNAL_SERVER_ERROR.description,
+            )
 
         return user, HTTPStatus.OK.value

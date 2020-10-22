@@ -15,36 +15,30 @@ def cache(scope="class") -> CacheRepositoryABC:
 test_kvs = [
     ("test:key1", "test_5566"),
     ("test:key2", "test_7788_00000000000000000000000000000000000000000000000000"),
-    ("test:key300000000000000000000000000", "test_7788_00000000000000000000000000000000000000000000000000"),
-    ("test:key4empty", "")
+    (
+        "test:key300000000000000000000000000",
+        "test_7788_00000000000000000000000000000000000000000000000000",
+    ),
+    ("test:key4empty", ""),
 ]
 
 test_json_kvs = [
     ("test:key1_json", {"key1": "data1", "key2": "data2", "key3": "data3"}),
     ("test:key2_json_empty_dict", {}),
-    ("test:key3_json_empty_list", [])
+    ("test:key3_json_empty_list", []),
 ]
 
 
 @pytest.mark.redis
 class TestRedis(object):
-
     @pytest.mark.parametrize("key, val", test_kvs)
-    def test_set_key(self,
-                     cache: CacheRepositoryABC,
-                     key,
-                     val,
-                     ex=5):
+    def test_set_key(self, cache: CacheRepositoryABC, key, val, ex=5):
         cache.set(key, val, ex=ex)
         actual = cache.get(key)
         assert actual == val
 
     @pytest.mark.parametrize("key, val", test_kvs)
-    def test_delete_key(self,
-                        cache: CacheRepositoryABC,
-                        key,
-                        val,
-                        ex=None):
+    def test_delete_key(self, cache: CacheRepositoryABC, key, val, ex=None):
 
         cache.set(key, val, ex=ex)
         actual = cache.get(key)
@@ -55,22 +49,14 @@ class TestRedis(object):
         assert actual is None
 
     @pytest.mark.parametrize("key, val", test_json_kvs)
-    def test_set_json_key(self,
-                          cache: CacheRepositoryABC,
-                          key,
-                          val,
-                          ex=5):
+    def test_set_json_key(self, cache: CacheRepositoryABC, key, val, ex=5):
 
         cache.set_json(key, val, ex=ex)
         actual = cache.get_json(key)
         assert actual == val
 
-    @pytest.mark.parametrize("key, val, ex", [
-        pytest.param("test:key1_ex", "test_ex_val_5566", 2)]
-    )
-    def test_set_key_expire(self,
-                            cache: CacheRepositoryABC,
-                            key, val, ex):
+    @pytest.mark.parametrize("key, val, ex", [pytest.param("test:key1_ex", "test_ex_val_5566", 2)])
+    def test_set_key_expire(self, cache: CacheRepositoryABC, key, val, ex):
 
         cache.set(key, val, ex=ex)
         time.sleep(ex + 1)

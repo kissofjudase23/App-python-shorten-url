@@ -23,9 +23,8 @@ def to_int_id(base62_id: str) -> int:
 
 
 class MysqlUrlRepo(UrlRepositoryABC):
-
     def add_url(self, user_id, ori_url) -> str:
-        """ Add a new url
+        """Add a new url
         Args:
             user_id
             ori_url
@@ -46,9 +45,7 @@ class MysqlUrlRepo(UrlRepositoryABC):
                 pass
 
             # get the url id
-            url = session.query(Url)\
-                         .options(load_only(Url.id))\
-                         .filter(Url.ori_url == ori_url).one()
+            url = session.query(Url).options(load_only(Url.id)).filter(Url.ori_url == ori_url).one()
             url_id = url.id
             try:
                 # add user_url_map
@@ -61,7 +58,7 @@ class MysqlUrlRepo(UrlRepositoryABC):
         return to_base62_id(url_id)
 
     def delete_url(self, user_id, base62_url_id):
-        """ Add a new url
+        """Add a new url
         Args:
             user_id
             base62_url_id
@@ -75,12 +72,12 @@ class MysqlUrlRepo(UrlRepositoryABC):
             raise exc.NoUrlFoundError(f"{base62_url_id} is not a valid base62_url_id")
 
         with transaction_context() as session:
-            session.query(UserUrlMap)\
-                   .filter(and_(UserUrlMap.user_id == user_id, UserUrlMap.url_id == url_id))\
-                   .delete(synchronize_session=False)
+            session.query(UserUrlMap).filter(
+                and_(UserUrlMap.user_id == user_id, UserUrlMap.url_id == url_id)
+            ).delete(synchronize_session=False)
 
     def get_ori_url(self, base62_url_id) -> str:
-        """ Get the original URL
+        """Get the original URL
         Args:
             base62_url_id
         Return:
@@ -94,9 +91,12 @@ class MysqlUrlRepo(UrlRepositoryABC):
             raise exc.NoUrlFoundError(f"{base62_url_id} is not a valid base62_url_id")
 
         with transaction_context() as session:
-            url = session.query(Url)\
-                         .options(load_only(Url.ori_url))\
-                         .filter(Url.id == url_id).one_or_none()
+            url = (
+                session.query(Url)
+                .options(load_only(Url.ori_url))
+                .filter(Url.id == url_id)
+                .one_or_none()
+            )
             if not url:
                 raise exc.NoUrlFoundError(f"{base62_url_id} not found")
 
@@ -106,12 +106,13 @@ class MysqlUrlRepo(UrlRepositoryABC):
         url_entities = []
         user_id = int(user_id)
         with transaction_context() as session:
-            query = session.query(User)\
-                           .join(UserUrlMap, User.id == UserUrlMap.user_id)\
-                           .join(Url, UserUrlMap.url_id == Url.id)\
-                           .with_entities(Url.id, Url.ori_url)\
-                           .filter(User.id == user_id)\
-
+            query = (
+                session.query(User)
+                .join(UserUrlMap, User.id == UserUrlMap.user_id)
+                .join(Url, UserUrlMap.url_id == Url.id)
+                .with_entities(Url.id, Url.ori_url)
+                .filter(User.id == user_id)
+            )
             if page and page_size:
                 query = query.offset(page * page_size)
 
@@ -124,8 +125,7 @@ class MysqlUrlRepo(UrlRepositoryABC):
               (2, 'https://google.com.tw/456') ]
             """
             for url_id, ori_url in query.all():
-                url_entities.append(UrlEntity(base62_id=to_base62_id(url_id),
-                                              ori_url=ori_url))
+                url_entities.append(UrlEntity(base62_id=to_base62_id(url_id), ori_url=ori_url))
 
         return url_entities
 
@@ -147,12 +147,10 @@ def test():
     user_uid = user_repo.add_user(name="Tom", email="5566")
     print(f"user_uid:{user_uid}")
 
-    base62_url_id = url_repo.add_url(user_id=user_uid,
-                                     ori_url="https://google.com.tw/123")
+    base62_url_id = url_repo.add_url(user_id=user_uid, ori_url="https://google.com.tw/123")
     print(f"base62_url_id:{base62_url_id}")
 
-    base62_url_id = url_repo.add_url(user_id=user_uid,
-                                     ori_url="https://google.com.tw/456")
+    base62_url_id = url_repo.add_url(user_id=user_uid, ori_url="https://google.com.tw/456")
     print(f"base62_url_id:{base62_url_id}")
 
     user_uid = "1"
