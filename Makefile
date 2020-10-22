@@ -21,7 +21,7 @@ ut_cov: clean_cache
 lint:
 	flake8 ./shorten_url
 
-black:
+format:
 	python -m black shorten_url
 
 up:
